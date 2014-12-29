@@ -7,11 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
+
+@protocol NewMapCoverViewDelegate <NSObject>
+
+-(CGPoint)viewPointFromMapPoint:(CGPoint)point;
+-(CGPoint)mapPointFromViewPoint:(CGPoint)point;
+
+@end
 
 @interface NewMapCoverView : UIView
 
+@property (nonatomic) CLLocationCoordinate2D coor0, coor1;
+@property (nonatomic,weak) id<NewMapCoverViewDelegate> delegate;
+
 -(id)initWithFrame:(CGRect)frame fields:(NSArray *)fields;
 -(void)stop;
--(void)restart;
+-(void)restartWithNewPoint1:(CGPoint)p1 point2:(CGPoint)p2;
 
 @end

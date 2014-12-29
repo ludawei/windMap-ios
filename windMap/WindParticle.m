@@ -65,4 +65,9 @@
     self.center = center;
     [self setVelocityWithX:xv y:yv];
 }
+
+-(NSString *)description
+{
+    return [NSString stringWithFormat:@"center: %@, xv: %.2f, yv: %.2f", [NSValue valueWithCGPoint:self.center], self.xv, self.yv];
+}
 @end

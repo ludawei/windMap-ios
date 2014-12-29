@@ -40,10 +40,10 @@
         self.backgroundColor = [UIColor clearColor];
         
         self.particles = [NSMutableArray arrayWithCapacity:PARTICLE_LIMIT];
-        self.x0 = -178.875;
-        self.y0 = -90.0;
-        self.x1 = 180;
-        self.y1 = 90;
+//        self.x0 = -178.875;
+//        self.y0 = -90.0;
+//        self.x1 = 180;
+//        self.y1 = 90;
         self.gridWidth = 320;
         self.gridHeight = 161;
         
@@ -58,9 +58,9 @@
             WindParticle *particle = [[WindParticle alloc] init];
             particle.maxLength = self.maxLength;
             
-            CGPoint center = [self randomParticleCenter];//CGPointMake(MIN(self.bounds.size.width, i), i);//
-            Vector *vect = [self vecorWithPoint:center];
-            [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
+//            CGPoint center = [self randomParticleCenter];//CGPointMake(MIN(self.bounds.size.width, i), i);//
+//            Vector *vect = [self vecorWithPoint:center];
+//            [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
             
             [self.particles addObject:particle];
         }
@@ -162,21 +162,38 @@
     self.fields = arr;
 }
 
+
+// 在界面上随机产生一个点
 -(CGPoint)randomParticleCenter
 {
     CGFloat x,y;
     double a = ((double)arc4random() / ARC4RANDOM_MAX);
     double b = ((double)arc4random() / ARC4RANDOM_MAX);
+#if 0
     x = a*self.x0 + (1-a)*self.x1;
     y = b*self.y0 + (1-b)*self.y1;
+#else
+    x = (1-a)*self.bounds.size.width;
+    y = (1-b)*self.bounds.size.height;
+#endif
     return CGPointMake(x, y);
 }
 
+// 产生一个随机的生命周期
 -(NSInteger)randomAge
 {
     return 1+arc4random_uniform(40);
 }
 
+/**
+ *  根据周围点的速度，得到该点的速度
+ *
+ *  @param isX 是X，还是Y
+ *  @param a   x方向上的值
+ *  @param b   y方向上的值
+ *
+ *  @return 得到该点的速度（x或y）
+ */
 -(CGFloat)bilinearWithIsX:(BOOL)isX a:(CGFloat)a b:(CGFloat)b
 {
     NSInteger na = (int)floor(a);
@@ -193,6 +210,13 @@
     [(Vector *)[self.fields objectAtIndex:MIN((ma*index+mb), self.fields.count-1)] ValueWithIsX:isX] * fa * fb;
 }
 
+/**
+ *  根据任一经纬度，得到一个速度Vector
+ *
+ *  @param point 经纬度(x为long, y为lat)
+ *
+ *  @return 得到一个速度Vector
+ */
 -(Vector *)vecorWithPoint:(CGPoint)point
 {
     CGFloat a = (self.gridWidth - 1 - 1e-6)*(point.x - self.x0)/(self.x1 - self.x0);
@@ -222,7 +246,7 @@
         particle.age--;
         if (particle.age <= 0) {
             CGPoint center = [self randomParticleCenter];
-            Vector *vect = [self vecorWithPoint:center];
+            Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
 //            dispatch_async(dispatch_get_main_queue(), ^{
                 [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
 //            });
@@ -230,16 +254,16 @@
         else
         {
             CGPoint center = CGPointMake(particle.center.x+particle.xv, particle.center.y+particle.yv);
-            CGRect disRect = CGRectMake(self.x0, self.y0, self.x1-self.x0, self.y1-self.y0);
+            CGRect disRect = self.bounds;//CGRectMake(self.x0, self.y0, self.x1-self.x0, self.y1-self.y0);
             if (!CGRectContainsPoint(disRect, center)) {
                 center = [self randomParticleCenter];
-                Vector *vect = [self vecorWithPoint:center];
+                Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
 //                dispatch_async(dispatch_get_main_queue(), ^{
                     [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
 //                });
             }
             
-            Vector *vect = [self vecorWithPoint:center];
+            Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
 //            dispatch_async(dispatch_get_main_queue(), ^{
                 [particle updateWithCenter:center xv:vect.x yv:vect.y];
 //            });
@@ -254,8 +278,11 @@
     self.hidden = YES;
 }
 
--(void)restart
+-(void)restartWithNewPoint1:(CGPoint)p1 point2:(CGPoint)p2;
 {
+    self.x0 = p1.x; self.y0 = p1.y;
+    self.x1 = p2.x; self.y1 = p2.y;
+    
     [self.timer setFireDate:[NSDate distantPast]];
     self.hidden = NO;
 }

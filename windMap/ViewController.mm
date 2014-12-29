@@ -13,7 +13,7 @@
 #import "NewMapCoverView.h"
 #import "TestView.h"
 
-@interface ViewController ()<BMKMapViewDelegate>
+@interface ViewController ()<BMKMapViewDelegate, NewMapCoverViewDelegate>
 
 @property (nonatomic,strong) NewMapCoverView *mainView;
 @property (nonatomic,strong) BMKMapView *mapView;
@@ -38,6 +38,7 @@
     
     
     self.mainView = [[NewMapCoverView alloc] initWithFrame:self.view.bounds fields:fields];
+    self.mainView.delegate = self;
     self.mainView.userInteractionEnabled = NO;
     self.mainView.translatesAutoresizingMaskIntoConstraints = YES;
     self.mainView.frame = self.view.bounds;
@@ -67,7 +68,26 @@
 
 -(void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-    [self.mainView restart];
+    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(mapView.region.center.latitude + mapView.region.span.latitudeDelta/2, mapView.region.center.longitude - mapView.region.span.longitudeDelta/2);
+    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(mapView.region.center.latitude - mapView.region.span.latitudeDelta/2, mapView.region.center.longitude + mapView.region.span.longitudeDelta/2);
+    
+//    CGPoint point1 = [self.mapView convertCoordinate:coor1 toPointToView:self.mapView];
+//    CGPoint point2 = [self.mapView convertCoordinate:coor2 toPointToView:self.mapView];
+//    NSLog(@"%@, %@", [NSValue valueWithCGPoint:point1], [NSValue valueWithCGPoint:point2]);
+    
+    [self.mainView restartWithNewPoint1:CGPointMake(coor1.longitude, coor1.latitude) point2:CGPointMake(coor2.longitude, coor2.latitude)];
+}
+
+-(CGPoint)viewPointFromMapPoint:(CGPoint)point
+{
+    CGPoint point1 = [self.mapView convertCoordinate:CLLocationCoordinate2DMake(point.y, point.x) toPointToView:self.mapView];
+    return point1;
+}
+
+-(CGPoint)mapPointFromViewPoint:(CGPoint)point
+{
+    CLLocationCoordinate2D coor = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
+    return CGPointMake(coor.longitude, coor.latitude);
 }
 
 - (void)didReceiveMemoryWarning {
