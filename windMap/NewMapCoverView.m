@@ -21,7 +21,7 @@
 
 @interface NewMapCoverView ()
 {
-    BOOL testFlag;
+//    BOOL testFlag;
 }
 
 @property (nonatomic,strong) NSTimer *timer;
@@ -50,11 +50,6 @@
         self.y1 = 90;
         self.gridWidth = 320;
         self.gridHeight = 161;
-        
-//        self.x0 = 0;
-//        self.y0 = 0;
-//        self.x1 = self.bounds.size.width;
-//        self.y1 = self.bounds.size.height;
         
         [self setupFields:fields];
         
@@ -286,11 +281,8 @@
     self.hidden = YES;
 }
 
--(void)restartWithNewPoint1:(CGPoint)p1 point2:(CGPoint)p2;
+-(void)restart
 {
-//    self.x0 = p1.x; self.y0 = p1.y;
-//    self.x1 = p2.x; self.y1 = p2.y;
-    
     [self.timer setFireDate:[NSDate distantPast]];
     self.hidden = NO;
 }

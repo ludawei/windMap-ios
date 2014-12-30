@@ -23,6 +23,6 @@
 
 -(id)initWithFrame:(CGRect)frame fields:(NSArray *)fields;
 -(void)stop;
--(void)restartWithNewPoint1:(CGPoint)p1 point2:(CGPoint)p2;
+-(void)restart;
 
 @end

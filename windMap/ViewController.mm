@@ -63,10 +63,10 @@
 
 -(void)mapViewDidFinishLoading:(BMKMapView *)mapView
 {
-    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(mapView.region.center.latitude - mapView.region.span.latitudeDelta/2, mapView.region.center.longitude - mapView.region.span.longitudeDelta/2);
-    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(mapView.region.center.latitude + mapView.region.span.latitudeDelta/2, mapView.region.center.longitude + mapView.region.span.longitudeDelta/2);
+//    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(mapView.region.center.latitude - mapView.region.span.latitudeDelta/2, mapView.region.center.longitude - mapView.region.span.longitudeDelta/2);
+//    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(mapView.region.center.latitude + mapView.region.span.latitudeDelta/2, mapView.region.center.longitude + mapView.region.span.longitudeDelta/2);
     
-    [self.mainView restartWithNewPoint1:CGPointMake(coor1.longitude, coor1.latitude) point2:CGPointMake(coor2.longitude, coor2.latitude)];
+    [self.mainView restart];
 }
 
 - (void)mapView:(BMKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
@@ -76,14 +76,14 @@
 
 -(void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(mapView.region.center.latitude - mapView.region.span.latitudeDelta/2, mapView.region.center.longitude - mapView.region.span.longitudeDelta/2);
-    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(mapView.region.center.latitude + mapView.region.span.latitudeDelta/2, mapView.region.center.longitude + mapView.region.span.longitudeDelta/2);
+//    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(mapView.region.center.latitude - mapView.region.span.latitudeDelta/2, mapView.region.center.longitude - mapView.region.span.longitudeDelta/2);
+//    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(mapView.region.center.latitude + mapView.region.span.latitudeDelta/2, mapView.region.center.longitude + mapView.region.span.longitudeDelta/2);
     
 //    CGPoint point1 = [self.mapView convertCoordinate:coor1 toPointToView:self.mapView];
 //    CGPoint point2 = [self.mapView convertCoordinate:coor2 toPointToView:self.mapView];
 //    NSLog(@"%@, %@", [NSValue valueWithCGPoint:point1], [NSValue valueWithCGPoint:point2]);
     
-    [self.mainView restartWithNewPoint1:CGPointMake(coor1.longitude, coor1.latitude) point2:CGPointMake(coor2.longitude, coor2.latitude)];
+    [self.mainView restart];
 }
 
 -(CGPoint)viewPointFromMapPoint:(CGPoint)point
@@ -92,6 +92,7 @@
     return point1;
 }
 
+// 返回view上的点对应在地图上的位置
 -(CGPoint)mapPointFromViewPoint:(CGPoint)point
 {
 //    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(self.mapView.region.center.latitude - self.mapView.region.span.latitudeDelta/2, self.mapView.region.center.longitude - self.mapView.region.span.longitudeDelta/2);
