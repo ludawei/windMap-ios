@@ -39,6 +39,7 @@
 		EE5DF2561A4BA65F00C36A1E /* WindParticle.m in Sources */ = {isa = PBXBuildFile; fileRef = EE5DF2551A4BA65F00C36A1E /* WindParticle.m */; };
 		EEBEE9E41A4D465F0033E882 /* NewMapCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */; };
 		EEBEE9E91A50E19F0033E882 /* TestView.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBEE9E81A50E19F0033E882 /* TestView.m */; };
+		EEDD344C1A52826E0045658E /* UIView+viewShot.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDD344B1A52826E0045658E /* UIView+viewShot.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +170,8 @@
 		EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewMapCoverView.m; sourceTree = "<group>"; };
 		EEBEE9E71A50E19F0033E882 /* TestView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestView.h; sourceTree = "<group>"; };
 		EEBEE9E81A50E19F0033E882 /* TestView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestView.m; sourceTree = "<group>"; };
+		EEDD344A1A52826E0045658E /* UIView+viewShot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+viewShot.h"; sourceTree = "<group>"; };
+		EEDD344B1A52826E0045658E /* UIView+viewShot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+viewShot.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -329,6 +332,8 @@
 				EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */,
 				EEBEE9E71A50E19F0033E882 /* TestView.h */,
 				EEBEE9E81A50E19F0033E882 /* TestView.m */,
+				EEDD344A1A52826E0045658E /* UIView+viewShot.h */,
+				EEDD344B1A52826E0045658E /* UIView+viewShot.m */,
 			);
 			path = windMap;
 			sourceTree = "<group>";
@@ -514,6 +519,7 @@
 				EE5DF20E1A4BA3A300C36A1E /* ViewController.mm in Sources */,
 				EE5DF20B1A4BA3A300C36A1E /* AppDelegate.m in Sources */,
 				EE5DF24A1A4BA40400C36A1E /* MASLayoutConstraint.m in Sources */,
+				EEDD344C1A52826E0045658E /* UIView+viewShot.m in Sources */,
 				EE5DF2081A4BA3A300C36A1E /* main.m in Sources */,
 				EE5DF24F1A4BA40400C36A1E /* View+MASAdditions.m in Sources */,
 				EE5DF24B1A4BA40400C36A1E /* MASViewAttribute.m in Sources */,

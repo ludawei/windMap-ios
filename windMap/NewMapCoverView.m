@@ -9,6 +9,7 @@
 #import "NewMapCoverView.h"
 #import "Vector.h"
 #import "WindParticle.h"
+#import "UIView+viewShot.h"
 
 #define S_HEIGHT_RADIO 0.5
 #define S_WIDTH_RADIO 0.6
@@ -33,6 +34,8 @@
 
 @property (nonatomic,strong) NSMutableArray *particles;
 
+//@property (nonatomic,strong) UIImage *lastViewShot;
+
 @end
 
 @implementation NewMapCoverView
@@ -41,7 +44,9 @@
 {
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor clearColor];
-        self.alpha = 0.8;
+//        self.opaque = NO;
+//        self.clearsContextBeforeDrawing = NO;
+//        self.alpha = 0.8;
         
         self.particles = [NSMutableArray arrayWithCapacity:PARTICLE_LIMIT];
         self.x0 = -178.875;
@@ -76,14 +81,70 @@
     UIGraphicsPushContext(context);
     
     CGContextClearRect(context, self.bounds);
-    
+#if 1
     for (int i=0; i<PARTICLE_LIMIT; i++) {
 
         [self drawPathInContext:context particle:[self.particles objectAtIndex:i]];
 //        [self drawPathWithCenter:center ctx:context];
     }
+#else
+    CGContextSaveGState(context);
+//    CGContextSetAlpha(context, 0.8);
+    
+    @autoreleasepool {
+        UIImage *image = [self viewShotWithAlpha:0.8];
+        if (image) {
+            [image drawAtPoint:CGPointZero];
+            image = nil;
+        }
+    }
+    
+    CGContextRestoreGState(context);
+    
+    for (int i=0; i<PARTICLE_LIMIT; i++) {
+        
+        [self drawPathInContext1:context particle:[self.particles objectAtIndex:i]];
+    }
+#endif
     UIGraphicsPopContext();
+//    CGContextRelease(context);
 }
+
+-(void)drawPathInContext1:(CGContextRef)context particle:(WindParticle *)particle
+{
+    if (particle.age <= 0) {
+        return;
+    }
+    
+    CGSize size = CGSizeMake(PARTICLE_WIDTH, PARTICLE_HEIGHT);
+    CGPoint center = particle.center;
+    CGPoint point = CGPointMake(center.x - size.width/2.0, center.y - size.height/2.0);
+    
+    CGContextSaveGState(context);
+    CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
+    CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
+    
+    //    NSLog(@"start : %@", [NSValue valueWithCGPoint:point]);
+    
+    /**********************************   画一条线段  *****************************************/
+    point = CGPointZero;
+    CGPoint newPoint = point;
+    CGContextSetStrokeColorWithColor(context, particle.color.CGColor);
+    
+    CGContextSetLineWidth(context, 2);
+    
+    newPoint = CGPointMake((0 + point.x), point.y);
+    CGContextMoveToPoint(context, newPoint.x, newPoint.y);
+    
+    newPoint = CGPointMake((particle.length + point.x), point.y);
+    CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
+    
+    CGContextStrokePath(context);
+    /**********************************   画一条线段  *****************************************/
+    
+    CGContextRestoreGState(context);
+}
+
 
 -(void)drawPathInContext:(CGContextRef)context particle:(WindParticle *)particle
 {
@@ -138,7 +199,7 @@
 {
     [super didMoveToSuperview];
     
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.15f target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
 }
 
 -(void)setupFields:(NSArray *)fields
@@ -255,7 +316,7 @@
     particle.age--;
     if (particle.age <= 0) {
         CGPoint center = [self randomParticleCenter];
-        Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
+        Vector *vect = [self vecorWithPoint:[self mapPointFromViewPoint:center]];
         [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
     }
     else
@@ -264,13 +325,15 @@
         CGPoint center = CGPointMake(particle.center.x+particle.xv, particle.center.y+(-particle.yv));
         CGRect disRect = self.bounds;
         CGRect disMapRect = CGRectMake(self.x0, self.y0, self.x1-self.x0, self.y1-self.y0);
-        if (!CGRectContainsPoint(disRect, center) || !CGRectContainsPoint(disMapRect, [self.delegate mapPointFromViewPoint:center])) {
+        
+        CGPoint mapPoint = [self mapPointFromViewPoint:center];
+        if (!CGRectContainsPoint(disRect, center) || !CGRectContainsPoint(disMapRect, mapPoint)) {
             center = [self randomParticleCenter];
-            Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
+            Vector *vect = [self vecorWithPoint:[self mapPointFromViewPoint:center]];
             [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
         }
         
-        Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
+        Vector *vect = [self vecorWithPoint:mapPoint];
         [particle updateWithCenter:center xv:vect.x yv:vect.y];
     }
 }
@@ -287,4 +350,20 @@
     self.hidden = NO;
 }
 
+// 返回view上的点对应在地图上的位置
+-(CGPoint)mapPointFromViewPoint:(CGPoint)point
+{
+    //    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(self.mapView.region.center.latitude - self.mapView.region.span.latitudeDelta/2, self.mapView.region.center.longitude - self.mapView.region.span.longitudeDelta/2);
+    //    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(self.mapView.region.center.latitude + self.mapView.region.span.latitudeDelta/2, self.mapView.region.center.longitude + self.mapView.region.span.longitudeDelta/2);
+    if (self.mapView) {
+        CLLocationCoordinate2D coor = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
+        
+        return CGPointMake(coor.longitude, coor.latitude);
+    }
+    
+    return point;
+    
+    //    CGPoint point1 = CGPointMake(MAX(MIN(coor.longitude, coor2.longitude), coor1.longitude), MAX(MIN(coor.latitude, coor2.latitude), coor1.latitude));
+    
+}
 @end

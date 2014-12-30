@@ -20,5 +20,6 @@
 -(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv;
 -(void)updateWithCenter:(CGPoint)center xv:(CGFloat)xv yv:(CGFloat)yv;
 -(CGFloat)angleWithXY;
+-(CGFloat)length;
 
 @end

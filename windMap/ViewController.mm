@@ -13,7 +13,7 @@
 #import "NewMapCoverView.h"
 #import "TestView.h"
 
-@interface ViewController ()<BMKMapViewDelegate, NewMapCoverViewDelegate>
+@interface ViewController ()<BMKMapViewDelegate>
 
 @property (nonatomic,strong) NewMapCoverView *mainView;
 @property (nonatomic,strong) BMKMapView *mapView;
@@ -28,7 +28,7 @@
     
     
     
-    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+    self.view.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
     
     [self initMapView];
     
@@ -38,7 +38,7 @@
     
     
     self.mainView = [[NewMapCoverView alloc] initWithFrame:self.view.bounds fields:fields];
-    self.mainView.delegate = self;
+    self.mainView.mapView = self.mapView;
     self.mainView.userInteractionEnabled = NO;
     self.mainView.translatesAutoresizingMaskIntoConstraints = YES;
     self.mainView.frame = self.view.bounds;
@@ -57,7 +57,11 @@
 {
     self.mapView = [[BMKMapView alloc] initWithFrame:self.view.bounds];
     self.mapView.delegate = self;
+//    self.mapView.mapType = BMKMapTypeSatellite;
     self.mapView.scrollEnabled = YES;
+    self.mapView.rotateEnabled = NO;
+    self.mapView.overlookEnabled = NO;
+//    self.mapView.alpha = 0.5;
     [self.view addSubview:self.mapView];
 }
 

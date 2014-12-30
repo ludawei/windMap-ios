@@ -29,7 +29,7 @@
 {
     if (self = [super init]) {
         
-        self.vScale = 5.0;
+        self.vScale = 8.0;
         self.oldCenter = CGPointMake(-1, -1);
     }
     
@@ -53,6 +53,16 @@
 {
     self.age = age;
     [self updateWithCenter:center xv:xv yv:yv];
+    
+    self.oldCenter = CGPointMake(-1, -1);
+}
+
+-(CGFloat)length
+{
+    if (self.oldCenter.x == -1) {
+        return 5;
+    }
+    return sqrt((self.center.x-self.oldCenter.x)*(self.center.x-self.oldCenter.x) + (self.center.y-self.oldCenter.y)*(self.center.y-self.oldCenter.y));
 }
 
 -(CGFloat)angleWithXY
