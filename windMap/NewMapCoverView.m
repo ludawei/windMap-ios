@@ -20,6 +20,9 @@
 #define PARTICLE_LIMIT      500
 
 @interface NewMapCoverView ()
+{
+    BOOL testFlag;
+}
 
 @property (nonatomic,strong) NSTimer *timer;
 
@@ -38,19 +41,20 @@
 {
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor clearColor];
+        self.alpha = 0.8;
         
         self.particles = [NSMutableArray arrayWithCapacity:PARTICLE_LIMIT];
-//        self.x0 = -178.875;
-//        self.y0 = -90.0;
-//        self.x1 = 180;
-//        self.y1 = 90;
+        self.x0 = -178.875;
+        self.y0 = -90.0;
+        self.x1 = 180;
+        self.y1 = 90;
         self.gridWidth = 320;
         self.gridHeight = 161;
         
-        self.x0 = 0;
-        self.y0 = 0;
-        self.x1 = self.bounds.size.width;
-        self.y1 = self.bounds.size.height;
+//        self.x0 = 0;
+//        self.y0 = 0;
+//        self.x1 = self.bounds.size.width;
+//        self.y1 = self.bounds.size.height;
         
         [self setupFields:fields];
         
@@ -97,11 +101,12 @@
     CGPoint point = CGPointMake(center.x - size.width/2.0, center.y - size.height/2.0);
 
     CGContextSaveGState(context);
-    CGContextTranslateCTM(context, point.x, point.y);
-    CGContextRotateCTM(context, particle.angleWithXY);
+    CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
+    CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
     
 //    NSLog(@"start : %@", [NSValue valueWithCGPoint:point]);
     
+    /**********************************   画一个箭头  *****************************************/
     point = CGPointZero;
     CGPoint newPoint = point;
     CGContextSetFillColorWithColor(context, particle.color.CGColor);
@@ -129,6 +134,7 @@
     
     CGContextClosePath(context);
     CGContextFillPath(context);
+    /**********************************   画一个箭头  *****************************************/
     
     CGContextRestoreGState(context);
 }
@@ -148,6 +154,7 @@
         if (str) {
             NSArray *vs = [str componentsSeparatedByString:@","];
             if (vs.count == 2) {
+                
                 Vector *v = [Vector new];
                 v.x = [vs.firstObject floatValue];
                 v.y = [vs.lastObject floatValue];
@@ -185,6 +192,8 @@
     return 1+arc4random_uniform(40);
 }
 
+
+
 /**
  *  根据周围点的速度，得到该点的速度
  *
@@ -196,18 +205,22 @@
  */
 -(CGFloat)bilinearWithIsX:(BOOL)isX a:(CGFloat)a b:(CGFloat)b
 {
-    NSInteger na = (int)floor(a);
-    NSInteger nb = (int)floor(b);
-    NSInteger ma = (int)ceil(a);
-    NSInteger mb = (int)ceil(b);
-    NSInteger fa = a - na;
-    NSInteger fb = b - nb;
+    NSInteger na = MIN((int)floor(a), self.gridWidth-1);
+    NSInteger nb = MIN((int)floor(b), self.gridHeight-1);
+    NSInteger ma = MIN((int)ceil(a), self.gridWidth-1);
+    NSInteger mb = MIN((int)ceil(b), self.gridHeight-1);
+    CGFloat fa = a - na;
+    CGFloat fb = b - nb;
     
     NSInteger index = self.gridHeight;//isX?self.gridHeight:self.gridWidth;
     return [(Vector *)[self.fields objectAtIndex:MIN((na*index+nb), self.fields.count-1)] ValueWithIsX:isX] * (1 - fa) * (1 - fb) +
     [(Vector *)[self.fields objectAtIndex:MIN((ma*index+nb), self.fields.count-1)] ValueWithIsX:isX] * fa * (1 - fb) +
     [(Vector *)[self.fields objectAtIndex:MIN((na*index+mb), self.fields.count-1)] ValueWithIsX:isX] * (1 - fa) * fb +
     [(Vector *)[self.fields objectAtIndex:MIN((ma*index+mb), self.fields.count-1)] ValueWithIsX:isX] * fa * fb;
+//    return [(Vector *)self.fields[na][nb] ValueWithIsX:isX] * (1 - fa) * (1 - fb) +
+//    [(Vector *)self.fields[ma][nb] ValueWithIsX:isX] * fa * (1 - fb) +
+//    [(Vector *)self.fields[na][mb] ValueWithIsX:isX] * (1 - fa) * fb +
+//    [(Vector *)self.fields[ma][mb] ValueWithIsX:isX] * fa * fb;
 }
 
 /**
@@ -219,11 +232,13 @@
  */
 -(Vector *)vecorWithPoint:(CGPoint)point
 {
+//    point = CGPointMake(-178.875,-90);
     CGFloat a = (self.gridWidth - 1 - 1e-6)*(point.x - self.x0)/(self.x1 - self.x0);
     CGFloat b = (self.gridHeight - 1 - 1e-6)*(point.y - self.y0)/(self.y1 - self.y0);
     CGFloat vx = [self bilinearWithIsX:YES a:a b:b];
     CGFloat vy = [self bilinearWithIsX:NO a:a b:b];
     
+//    NSLog(@"vx: %f, vy: %f", vx, vy);
     Vector *v = [Vector new];
     v.x = vx;
     v.y = vy;
@@ -242,34 +257,27 @@
 
 -(void)updateCenter:(WindParticle *)particle
 {
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        particle.age--;
-        if (particle.age <= 0) {
-            CGPoint center = [self randomParticleCenter];
+    particle.age--;
+    if (particle.age <= 0) {
+        CGPoint center = [self randomParticleCenter];
+        Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
+        [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
+    }
+    else
+    {
+        // 经度自下向上，画布自上向下，故取反
+        CGPoint center = CGPointMake(particle.center.x+particle.xv, particle.center.y+(-particle.yv));
+        CGRect disRect = self.bounds;
+        CGRect disMapRect = CGRectMake(self.x0, self.y0, self.x1-self.x0, self.y1-self.y0);
+        if (!CGRectContainsPoint(disRect, center) || !CGRectContainsPoint(disMapRect, [self.delegate mapPointFromViewPoint:center])) {
+            center = [self randomParticleCenter];
             Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-                [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
-//            });
+            [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
         }
-        else
-        {
-            CGPoint center = CGPointMake(particle.center.x+particle.xv, particle.center.y+particle.yv);
-            CGRect disRect = self.bounds;//CGRectMake(self.x0, self.y0, self.x1-self.x0, self.y1-self.y0);
-            if (!CGRectContainsPoint(disRect, center)) {
-                center = [self randomParticleCenter];
-                Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
-//                dispatch_async(dispatch_get_main_queue(), ^{
-                    [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
-//                });
-            }
-            
-            Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-                [particle updateWithCenter:center xv:vect.x yv:vect.y];
-//            });
-        }
-//    });
-    
+        
+        Vector *vect = [self vecorWithPoint:[self.delegate mapPointFromViewPoint:center]];
+        [particle updateWithCenter:center xv:vect.x yv:vect.y];
+    }
 }
 
 -(void)stop
@@ -280,8 +288,8 @@
 
 -(void)restartWithNewPoint1:(CGPoint)p1 point2:(CGPoint)p2;
 {
-    self.x0 = p1.x; self.y0 = p1.y;
-    self.x1 = p2.x; self.y1 = p2.y;
+//    self.x0 = p1.x; self.y0 = p1.y;
+//    self.x1 = p2.x; self.y1 = p2.y;
     
     [self.timer setFireDate:[NSDate distantPast]];
     self.hidden = NO;

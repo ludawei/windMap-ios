@@ -17,6 +17,7 @@
 @interface WindParticle ()
 
 @property (nonatomic) CGFloat vScale;       // 速度比例
+@property (nonatomic) CGPoint oldCenter;
 
 @end
 
@@ -29,6 +30,7 @@
     if (self = [super init]) {
         
         self.vScale = 5.0;
+        self.oldCenter = CGPointMake(-1, -1);
     }
     
     return self;
@@ -57,11 +59,28 @@
 {
 //    CGFloat r = sqrt(self.xv*self.xv + self.yv*self.yv);
 //    return self.yv/r;
-    return atan2(self.yv, self.xv);
+    CGFloat angle = 0;
+    if (self.oldCenter.x != -1) {
+        if (self.center.x == self.oldCenter.x) {
+            angle = ((self.center.y > self.oldCenter.y)?1:-1)*M_PI_2;
+        }
+        else if (self.center.y == self.oldCenter.y)
+        {
+            angle = (self.center.x > self.oldCenter.x)?0:M_PI;
+        }
+        else
+        {
+            angle = atan2(self.center.y - self.oldCenter.y, self.center.x - self.oldCenter.x);
+        }
+    }
+    
+    return angle;
+//    return atan2(self.yv, self.xv);
 }
 
 -(void)updateWithCenter:(CGPoint)center xv:(CGFloat)xv yv:(CGFloat)yv
 {
+    self.oldCenter = self.center;
     self.center = center;
     [self setVelocityWithX:xv y:yv];
 }
