@@ -44,6 +44,10 @@
     self.mainView.frame = self.view.bounds;
     
     [self.view addSubview:self.mainView];
+    
+    [self.mainView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(self.view);
+    }];
 #else
     TestView *view = [[TestView alloc] initWithFrame:self.view.bounds];
     view.translatesAutoresizingMaskIntoConstraints = YES;
@@ -61,8 +65,13 @@
     self.mapView.scrollEnabled = YES;
     self.mapView.rotateEnabled = NO;
     self.mapView.overlookEnabled = NO;
+    self.mapView.zoomLevel = 4.5;
 //    self.mapView.alpha = 0.5;
     [self.view addSubview:self.mapView];
+    
+    [self.mapView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(self.view);
+    }];
 }
 
 -(void)mapViewDidFinishLoading:(BMKMapView *)mapView

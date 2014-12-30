@@ -44,8 +44,6 @@
 {
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor clearColor];
-//        self.opaque = NO;
-//        self.clearsContextBeforeDrawing = NO;
 //        self.alpha = 0.8;
         
         self.particles = [NSMutableArray arrayWithCapacity:PARTICLE_LIMIT];
@@ -68,9 +66,18 @@
             
             [self.particles addObject:particle];
         }
+        
+        // 注册
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     
     return self;
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 // Only override drawRect: if you perform custom drawing.
@@ -81,20 +88,18 @@
     UIGraphicsPushContext(context);
     
     CGContextClearRect(context, self.bounds);
-#if 1
+#if 0
     for (int i=0; i<PARTICLE_LIMIT; i++) {
 
         [self drawPathInContext:context particle:[self.particles objectAtIndex:i]];
-//        [self drawPathWithCenter:center ctx:context];
     }
 #else
     CGContextSaveGState(context);
-//    CGContextSetAlpha(context, 0.8);
     
     @autoreleasepool {
-        UIImage *image = [self viewShotWithAlpha:0.8];
+        UIImage *image = [self viewShot];
         if (image) {
-            [image drawAtPoint:CGPointZero];
+            [image drawAtPoint:CGPointZero blendMode:kCGBlendModeCopy alpha:0.8];
             image = nil;
         }
     }
@@ -199,7 +204,7 @@
 {
     [super didMoveToSuperview];
     
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.15f target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
 }
 
 -(void)setupFields:(NSArray *)fields
@@ -365,5 +370,15 @@
     
     //    CGPoint point1 = CGPointMake(MAX(MIN(coor.longitude, coor2.longitude), coor1.longitude), MAX(MIN(coor.latitude, coor2.latitude), coor1.latitude));
     
+}
+
+-(void)willEnterForeground
+{
+    [self restart];
+}
+
+-(void)didEnterBackground
+{
+    [self stop];
 }
 @end
