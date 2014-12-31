@@ -39,6 +39,7 @@
     
     self.mainView = [[NewMapCoverView alloc] initWithFrame:self.view.bounds fields:fields];
     self.mainView.mapView = self.mapView;
+    self.mainView.particleType = 1;
     self.mainView.userInteractionEnabled = NO;
     self.mainView.translatesAutoresizingMaskIntoConstraints = YES;
     self.mainView.frame = self.view.bounds;
@@ -55,6 +56,33 @@
     
     [self.view addSubview:view];
 #endif
+    
+    // 注册
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if (self.mapView) {
+        [self.mapView viewWillAppear];
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    if (self.mapView) {
+        [self.mapView viewWillDisappear];
+    }
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)initMapView
@@ -72,6 +100,27 @@
     [self.mapView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self.view);
     }];
+    
+    
+    UISegmentedControl *buttons = [[UISegmentedControl alloc] initWithItems:@[@"箭头", @"线段"]];
+    [self.view addSubview:buttons];
+    
+    [buttons mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(self.view).offset(-10);
+        make.bottom.mas_equalTo(self.view).offset(-10);
+        make.size.mas_equalTo(CGSizeMake(100, 32));
+    }];
+    
+    buttons.selectedSegmentIndex = 0;
+    [buttons addTarget:self action:@selector(clickButtons:) forControlEvents:UIControlEventValueChanged];
+}
+
+-(void)clickButtons:(UISegmentedControl *)seg
+{
+    NSInteger index = seg.selectedSegmentIndex;
+    if (self.mainView.particleType != (int)index + 1) {
+        self.mainView.particleType = (int)index + 1;
+    }
 }
 
 -(void)mapViewDidFinishLoading:(BMKMapView *)mapView
@@ -95,26 +144,20 @@
 //    CGPoint point1 = [self.mapView convertCoordinate:coor1 toPointToView:self.mapView];
 //    CGPoint point2 = [self.mapView convertCoordinate:coor2 toPointToView:self.mapView];
 //    NSLog(@"%@, %@", [NSValue valueWithCGPoint:point1], [NSValue valueWithCGPoint:point2]);
+//    CGRect rect = [self.mapView convertMapRect:self.mapView.visibleMapRect toRectToView:self.mapView];
+//    NSLog(@"%@", [NSValue valueWithCGRect:rect]);
     
     [self.mainView restart];
 }
 
--(CGPoint)viewPointFromMapPoint:(CGPoint)point
+-(void)willEnterForeground
 {
-    CGPoint point1 = [self.mapView convertCoordinate:CLLocationCoordinate2DMake(point.y, point.x) toPointToView:self.mapView];
-    return point1;
+    [self.mainView restart];
 }
 
-// 返回view上的点对应在地图上的位置
--(CGPoint)mapPointFromViewPoint:(CGPoint)point
+-(void)didEnterBackground
 {
-//    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(self.mapView.region.center.latitude - self.mapView.region.span.latitudeDelta/2, self.mapView.region.center.longitude - self.mapView.region.span.longitudeDelta/2);
-//    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(self.mapView.region.center.latitude + self.mapView.region.span.latitudeDelta/2, self.mapView.region.center.longitude + self.mapView.region.span.longitudeDelta/2);
-    
-    CLLocationCoordinate2D coor = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
-    
-//    CGPoint point1 = CGPointMake(MAX(MIN(coor.longitude, coor2.longitude), coor1.longitude), MAX(MIN(coor.latitude, coor2.latitude), coor1.latitude));
-    return CGPointMake(coor.longitude, coor.latitude);
+    [self.mainView stop];
 }
 
 - (void)didReceiveMemoryWarning {

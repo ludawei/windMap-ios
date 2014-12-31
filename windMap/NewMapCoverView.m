@@ -14,8 +14,8 @@
 #define S_HEIGHT_RADIO 0.5
 #define S_WIDTH_RADIO 0.6
 
-#define PARTICLE_WIDTH 10
-#define PARTICLE_HEIGHT 6
+#define PARTICLE_WIDTH 8
+#define PARTICLE_HEIGHT 4
 
 #define ARC4RANDOM_MAX      0x100000000
 #define PARTICLE_LIMIT      500
@@ -66,18 +66,9 @@
             
             [self.particles addObject:particle];
         }
-        
-        // 注册
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     
     return self;
-}
-
--(void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 // Only override drawRect: if you perform custom drawing.
@@ -88,31 +79,30 @@
     UIGraphicsPushContext(context);
     
     CGContextClearRect(context, self.bounds);
-#if 0
-    for (int i=0; i<PARTICLE_LIMIT; i++) {
-
-        [self drawPathInContext:context particle:[self.particles objectAtIndex:i]];
-    }
-#else
-    CGContextSaveGState(context);
     
-    @autoreleasepool {
-        UIImage *image = [self viewShot];
-        if (image) {
-            [image drawAtPoint:CGPointZero blendMode:kCGBlendModeCopy alpha:0.8];
-            image = nil;
+    if (self.particleType == 1) {
+        for (int i=0; i<PARTICLE_LIMIT; i++) {
+            
+            [self drawPathInContext:context particle:[self.particles objectAtIndex:i]];
         }
     }
-    
-    CGContextRestoreGState(context);
-    
-    for (int i=0; i<PARTICLE_LIMIT; i++) {
+    else if (self.particleType == 2)
+    {
+        @autoreleasepool {
+            UIImage *image = [self viewShot];
+            if (image) {
+                [image drawAtPoint:CGPointZero blendMode:kCGBlendModeCopy alpha:0.8];
+                image = nil;
+            }
+        }
         
-        [self drawPathInContext1:context particle:[self.particles objectAtIndex:i]];
+        for (int i=0; i<PARTICLE_LIMIT; i++) {
+            
+            [self drawPathInContext1:context particle:[self.particles objectAtIndex:i]];
+        }
     }
-#endif
+
     UIGraphicsPopContext();
-//    CGContextRelease(context);
 }
 
 -(void)drawPathInContext1:(CGContextRef)context particle:(WindParticle *)particle
@@ -128,8 +118,6 @@
     CGContextSaveGState(context);
     CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
     CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
-    
-    //    NSLog(@"start : %@", [NSValue valueWithCGPoint:point]);
     
     /**********************************   画一条线段  *****************************************/
     point = CGPointZero;
@@ -164,8 +152,6 @@
     CGContextSaveGState(context);
     CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
     CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
-    
-//    NSLog(@"start : %@", [NSValue valueWithCGPoint:point]);
     
     /**********************************   画一个箭头  *****************************************/
     point = CGPointZero;
@@ -273,15 +259,11 @@
     CGFloat fa = a - na;
     CGFloat fb = b - nb;
     
-    NSInteger index = self.gridHeight;//isX?self.gridHeight:self.gridWidth;
+    NSInteger index = self.gridHeight;
     return [(Vector *)[self.fields objectAtIndex:MIN((na*index+nb), self.fields.count-1)] ValueWithIsX:isX] * (1 - fa) * (1 - fb) +
     [(Vector *)[self.fields objectAtIndex:MIN((ma*index+nb), self.fields.count-1)] ValueWithIsX:isX] * fa * (1 - fb) +
     [(Vector *)[self.fields objectAtIndex:MIN((na*index+mb), self.fields.count-1)] ValueWithIsX:isX] * (1 - fa) * fb +
     [(Vector *)[self.fields objectAtIndex:MIN((ma*index+mb), self.fields.count-1)] ValueWithIsX:isX] * fa * fb;
-//    return [(Vector *)self.fields[na][nb] ValueWithIsX:isX] * (1 - fa) * (1 - fb) +
-//    [(Vector *)self.fields[ma][nb] ValueWithIsX:isX] * fa * (1 - fb) +
-//    [(Vector *)self.fields[na][mb] ValueWithIsX:isX] * (1 - fa) * fb +
-//    [(Vector *)self.fields[ma][mb] ValueWithIsX:isX] * fa * fb;
 }
 
 /**
@@ -309,11 +291,17 @@
 
 -(void)timeFired
 {
-    [self.particles enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        WindParticle *particle = (WindParticle *)obj;
-        [self updateCenter:particle];
-    }];
-    [self setNeedsDisplay];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        [self.particles enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            WindParticle *particle = (WindParticle *)obj;
+            [self updateCenter:particle];
+        }];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self setNeedsDisplay];
+        });
+    });
 }
 
 -(void)updateCenter:(WindParticle *)particle
@@ -358,8 +346,6 @@
 // 返回view上的点对应在地图上的位置
 -(CGPoint)mapPointFromViewPoint:(CGPoint)point
 {
-    //    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(self.mapView.region.center.latitude - self.mapView.region.span.latitudeDelta/2, self.mapView.region.center.longitude - self.mapView.region.span.longitudeDelta/2);
-    //    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(self.mapView.region.center.latitude + self.mapView.region.span.latitudeDelta/2, self.mapView.region.center.longitude + self.mapView.region.span.longitudeDelta/2);
     if (self.mapView) {
         CLLocationCoordinate2D coor = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
         
@@ -367,18 +353,6 @@
     }
     
     return point;
-    
-    //    CGPoint point1 = CGPointMake(MAX(MIN(coor.longitude, coor2.longitude), coor1.longitude), MAX(MIN(coor.latitude, coor2.latitude), coor1.latitude));
-    
 }
 
--(void)willEnterForeground
-{
-    [self restart];
-}
-
--(void)didEnterBackground
-{
-    [self stop];
-}
 @end

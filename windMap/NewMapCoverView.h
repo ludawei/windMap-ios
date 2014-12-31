@@ -13,7 +13,7 @@
 @interface NewMapCoverView : UIView
 
 @property (nonatomic,strong) BMKMapView *mapView;
-@property (nonatomic) CLLocationCoordinate2D coor0, coor1;
+@property (nonatomic) int particleType;         // 1，箭头；2，线段
 
 -(id)initWithFrame:(CGRect)frame fields:(NSArray *)fields;
 -(void)stop;
