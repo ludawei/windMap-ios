@@ -17,9 +17,9 @@
 @property (nonatomic) CGPoint center;
 @property (nonatomic,strong) UIColor *color;
 
--(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv;
+-(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv colorBright:(BOOL)isRight;
 -(void)updateWithCenter:(CGPoint)center xv:(CGFloat)xv yv:(CGFloat)yv;
 -(CGFloat)angleWithXY;
 -(CGFloat)length;
-
+-(CGFloat)initAge;
 @end

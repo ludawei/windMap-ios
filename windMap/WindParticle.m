@@ -12,6 +12,8 @@
 
 @property (nonatomic) CGFloat vScale;       // 速度比例
 @property (nonatomic) CGPoint oldCenter;
+@property (nonatomic) CGFloat initAge;
+@property (nonatomic) BOOL isRight;
 
 @end
 
@@ -37,15 +39,22 @@
     
     CGFloat s = sqrt(x*x + y*y)/self.maxLength;
     CGFloat t = floor(290*(1 - s)) - 45;
-    self.color = [UIColor colorWithHue:t/255.0 saturation:0.5f brightness:0.5f alpha:0.8];
+    self.color = [UIColor colorWithHue:t/255.0 saturation:0.5f brightness:self.isRight?1.0f:0.5f alpha:0.8];
 }
 
--(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv
+-(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv colorBright:(BOOL)isRight
 {
+    self.isRight = isRight;
     self.age = age;
+    self.initAge = age;
     [self updateWithCenter:center xv:xv yv:yv];
     
     self.oldCenter = CGPointMake(-1, -1);
+}
+
+-(CGFloat)initAge
+{
+    return _initAge;
 }
 
 -(CGFloat)length

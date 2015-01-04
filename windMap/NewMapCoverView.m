@@ -119,6 +119,12 @@
     CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
     CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
     
+    CGFloat alpha = particle.age/5.0;
+    if (particle.initAge-particle.age <= 5) {
+        alpha = (particle.initAge-particle.age)/5.0;
+    }
+    CGContextSetAlpha(context, alpha);
+    
     /**********************************   画一条线段  *****************************************/
     point = CGPointZero;
     CGPoint newPoint = point;
@@ -152,6 +158,12 @@
     CGContextSaveGState(context);
     CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
     CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
+    
+    CGFloat alpha = particle.age/5.0;
+    if (particle.initAge-particle.age <= 5) {
+        alpha = (particle.initAge-particle.age)/5.0;
+    }
+    CGContextSetAlpha(context, alpha);
     
     /**********************************   画一个箭头  *****************************************/
     point = CGPointZero;
@@ -236,7 +248,7 @@
 // 产生一个随机的生命周期
 -(NSInteger)randomAge
 {
-    return 1+arc4random_uniform(40);
+    return 10+arc4random_uniform(30);
 }
 
 
@@ -310,7 +322,7 @@
     if (particle.age <= 0) {
         CGPoint center = [self randomParticleCenter];
         Vector *vect = [self vecorWithPoint:[self mapPointFromViewPoint:center]];
-        [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
+        [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y colorBright:self.mapView.mapType==BMKMapTypeSatellite];
     }
     else
     {
@@ -323,7 +335,7 @@
         if (!CGRectContainsPoint(disRect, center) || !CGRectContainsPoint(disMapRect, mapPoint)) {
             center = [self randomParticleCenter];
             Vector *vect = [self vecorWithPoint:[self mapPointFromViewPoint:center]];
-            [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y];
+            [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y colorBright:self.mapView.mapType==BMKMapTypeSatellite];
         }
         
         Vector *vect = [self vecorWithPoint:mapPoint];

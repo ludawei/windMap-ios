@@ -17,6 +17,7 @@
 
 @property (nonatomic,strong) NewMapCoverView *mainView;
 @property (nonatomic,strong) BMKMapView *mapView;
+@property (nonatomic,strong) UISegmentedControl *buttons,*buttons1;
 
 @end
 
@@ -113,6 +114,20 @@
     
     buttons.selectedSegmentIndex = 0;
     [buttons addTarget:self action:@selector(clickButtons:) forControlEvents:UIControlEventValueChanged];
+    self.buttons = buttons;
+    
+    UISegmentedControl *buttons1 = [[UISegmentedControl alloc] initWithItems:@[@"标准", @"卫星"]];
+    [self.view addSubview:buttons1];
+    
+    [buttons1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.view).offset(10);
+        make.bottom.mas_equalTo(self.view).offset(-10);
+        make.size.mas_equalTo(CGSizeMake(100, 32));
+    }];
+    
+    buttons1.selectedSegmentIndex = 0;
+    [buttons1 addTarget:self action:@selector(clickButtons1:) forControlEvents:UIControlEventValueChanged];
+    self.buttons1 = buttons1;
 }
 
 -(void)clickButtons:(UISegmentedControl *)seg
@@ -120,6 +135,22 @@
     NSInteger index = seg.selectedSegmentIndex;
     if (self.mainView.particleType != (int)index + 1) {
         self.mainView.particleType = (int)index + 1;
+    }
+}
+
+-(void)clickButtons1:(UISegmentedControl *)seg
+{
+    NSInteger index = seg.selectedSegmentIndex;
+    if (self.mapView.mapType != (int)index + 1) {
+        self.mapView.mapType = (int)index + 1;
+        
+        if (index == 1) {
+            self.buttons.tintColor = self.buttons1.tintColor = [UIColor colorWithWhite:1 alpha:1.0];
+        }
+        else
+        {
+            self.buttons.tintColor = self.buttons1.tintColor = nil;
+        }
     }
 }
 
