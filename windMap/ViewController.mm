@@ -69,6 +69,10 @@
     
     if (self.mapView) {
         [self.mapView viewWillAppear];
+        
+        BMKMapStatus *status = [self.mapView getMapStatus];
+        status.fLevel = 4.5;
+        [self.mapView setMapStatus:status withAnimation:YES];
     }
 }
 
@@ -95,6 +99,7 @@
     self.mapView.rotateEnabled = NO;
     self.mapView.overlookEnabled = NO;
     self.mapView.zoomLevel = 4.5;
+    
 //    self.mapView.alpha = 0.5;
     [self.view addSubview:self.mapView];
     
@@ -195,5 +200,4 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 @end

@@ -14,15 +14,18 @@
 #define S_HEIGHT_RADIO 0.5
 #define S_WIDTH_RADIO 0.6
 
-#define PARTICLE_WIDTH 8
+#define PARTICLE_WIDTH 7
 #define PARTICLE_HEIGHT 4
 
 #define ARC4RANDOM_MAX      0x100000000
-#define PARTICLE_LIMIT      500
+#define PARTICLE_LIMIT      300
+
+#define REFRESH_TIMEVAL     0.04f
 
 @interface NewMapCoverView ()
 {
 //    BOOL testFlag;
+    int imageTimeCount;
 }
 
 @property (nonatomic,strong) NSTimer *timer;
@@ -34,7 +37,9 @@
 
 @property (nonatomic,strong) NSMutableArray *particles;
 
-//@property (nonatomic,strong) UIImage *lastViewShot;
+@property (nonatomic,strong) UIBezierPath *arrowPath;
+
+@property (nonatomic,strong) UIImageView *imgView;
 
 @end
 
@@ -66,9 +71,26 @@
             
             [self.particles addObject:particle];
         }
+        
+        // 用来显示拖尾巴效果
+        self.imgView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.imgView.alpha = 0.85;
+        [self addSubview:self.imgView];
     }
     
     return self;
+}
+
+-(void)setParticleType:(int)particleType
+{
+    _particleType = particleType;
+    if (particleType == 1) {
+        self.imgView.hidden = YES;
+    }
+    else
+    {
+        self.imgView.hidden = NO;
+    }
 }
 
 // Only override drawRect: if you perform custom drawing.
@@ -80,70 +102,19 @@
     
     CGContextClearRect(context, self.bounds);
     
-    if (self.particleType == 1) {
-        for (int i=0; i<PARTICLE_LIMIT; i++) {
-            
-            [self drawPathInContext:context particle:[self.particles objectAtIndex:i]];
-        }
-    }
-    else if (self.particleType == 2)
+    if (self.particleType == 2)
     {
-        @autoreleasepool {
-            UIImage *image = [self viewShot];
-            if (image) {
-                [image drawAtPoint:CGPointZero blendMode:kCGBlendModeCopy alpha:0.8];
-                image = nil;
-            }
-        }
+        UIImage *image = [self viewShot];
+        self.imgView.image = image;
+    }
+    
+    for (int i=0; i<PARTICLE_LIMIT; i++) {
         
-        for (int i=0; i<PARTICLE_LIMIT; i++) {
-            
-            [self drawPathInContext1:context particle:[self.particles objectAtIndex:i]];
-        }
+        [self drawPathInContext:context particle:[self.particles objectAtIndex:i]];
     }
 
     UIGraphicsPopContext();
 }
-
--(void)drawPathInContext1:(CGContextRef)context particle:(WindParticle *)particle
-{
-    if (particle.age <= 0) {
-        return;
-    }
-    
-    CGSize size = CGSizeMake(PARTICLE_WIDTH, PARTICLE_HEIGHT);
-    CGPoint center = particle.center;
-    CGPoint point = CGPointMake(center.x - size.width/2.0, center.y - size.height/2.0);
-    
-    CGContextSaveGState(context);
-    CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
-    CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
-    
-    CGFloat alpha = particle.age/5.0;
-    if (particle.initAge-particle.age <= 5) {
-        alpha = (particle.initAge-particle.age)/5.0;
-    }
-    CGContextSetAlpha(context, alpha);
-    
-    /**********************************   画一条线段  *****************************************/
-    point = CGPointZero;
-    CGPoint newPoint = point;
-    CGContextSetStrokeColorWithColor(context, particle.color.CGColor);
-    
-    CGContextSetLineWidth(context, 2);
-    
-    newPoint = CGPointMake((0 + point.x), point.y);
-    CGContextMoveToPoint(context, newPoint.x, newPoint.y);
-    
-    newPoint = CGPointMake((particle.length + point.x), point.y);
-    CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
-    
-    CGContextStrokePath(context);
-    /**********************************   画一条线段  *****************************************/
-    
-    CGContextRestoreGState(context);
-}
-
 
 -(void)drawPathInContext:(CGContextRef)context particle:(WindParticle *)particle
 {
@@ -156,53 +127,84 @@
     CGPoint point = CGPointMake(center.x - size.width/2.0, center.y - size.height/2.0);
 
     CGContextSaveGState(context);
-    CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
-    CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
     
-    CGFloat alpha = particle.age/5.0;
-    if (particle.initAge-particle.age <= 5) {
-        alpha = (particle.initAge-particle.age)/5.0;
+    CGFloat temp_alpha = 10.0f;
+    CGFloat alpha = particle.age/temp_alpha;
+    if (particle.initAge-particle.age <= temp_alpha) {
+        alpha = (particle.initAge-particle.age)/temp_alpha;
     }
     CGContextSetAlpha(context, alpha);
     
-    /**********************************   画一个箭头  *****************************************/
-    point = CGPointZero;
-    CGPoint newPoint = point;
-    CGContextSetFillColorWithColor(context, particle.color.CGColor);
-    
-    newPoint = CGPointMake((0 + point.x), (size.height*((1-S_HEIGHT_RADIO)/2.0) + point.y));
-    CGContextMoveToPoint(context, newPoint.x, newPoint.y);
-    
-    newPoint = CGPointMake((size.width*S_WIDTH_RADIO + point.x), (size.height*((1-S_HEIGHT_RADIO)/2.0) + point.y));
-    CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
-    
-    newPoint = CGPointMake((size.width*S_WIDTH_RADIO + point.x), (0 + point.y));
-    CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
-    
-    newPoint = CGPointMake((size.width + point.x), (size.height*0.5 + point.y));
-    CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
-    
-    newPoint = CGPointMake((size.width*S_WIDTH_RADIO + point.x), (size.height + point.y));
-    CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
-    
-    newPoint = CGPointMake((size.width*S_WIDTH_RADIO + point.x), (size.height*((1+S_HEIGHT_RADIO)/2.0) + point.y));
-    CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
-    
-    newPoint = CGPointMake((0 + point.x), (size.height*((1+S_HEIGHT_RADIO)/2.0) + point.y));
-    CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
-    
-    CGContextClosePath(context);
-    CGContextFillPath(context);
-    /**********************************   画一个箭头  *****************************************/
+    if (self.particleType == 1) {
+        CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
+        CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
+        CGContextSetFillColorWithColor(context, [particle.color CGColor]);
+        [self.arrowPath fill];
+    }
+    else if (self.particleType == 2)
+    {
+        /**********************************   画一条线段  *****************************************/
+        CGContextSetStrokeColorWithColor(context, [particle.color CGColor]);
+        
+//        point = CGPointZero;
+//        CGPoint newPoint = point;
+        
+        CGContextSetLineWidth(context, 2);
+        
+        CGPoint newPoint = CGPointMake(particle.center.x, particle.center.y);
+        CGContextMoveToPoint(context, newPoint.x, newPoint.y);
+        
+        newPoint = CGPointMake(particle.oldCenter.x, particle.oldCenter.y);
+        CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
+        
+        CGContextStrokePath(context);
+        /**********************************   画一条线段  *****************************************/
+    }
     
     CGContextRestoreGState(context);
+}
+
+-(UIBezierPath *)arrowPath
+{
+    if (!_arrowPath) {
+        /**********************************   画一个箭头  *****************************************/
+        
+        _arrowPath = [UIBezierPath bezierPath];
+        
+        CGSize size = CGSizeMake(PARTICLE_WIDTH, PARTICLE_HEIGHT);
+        
+        CGPoint point = CGPointZero;
+        
+        CGPoint newPoint = CGPointMake((0 + point.x), (size.height*((1-S_HEIGHT_RADIO)/2.0) + point.y));
+        [_arrowPath moveToPoint:newPoint];
+        
+        newPoint = CGPointMake((size.width*S_WIDTH_RADIO + point.x), (size.height*((1-S_HEIGHT_RADIO)/2.0) + point.y));
+        [_arrowPath addLineToPoint:newPoint];
+        
+        newPoint = CGPointMake((size.width*S_WIDTH_RADIO + point.x), (0 + point.y));
+        [_arrowPath addLineToPoint:newPoint];
+        
+        newPoint = CGPointMake((size.width + point.x), (size.height*0.5 + point.y));
+        [_arrowPath addLineToPoint:newPoint];
+        
+        newPoint = CGPointMake((size.width*S_WIDTH_RADIO + point.x), (size.height + point.y));
+        [_arrowPath addLineToPoint:newPoint];
+        
+        newPoint = CGPointMake((size.width*S_WIDTH_RADIO + point.x), (size.height*((1+S_HEIGHT_RADIO)/2.0) + point.y));
+        [_arrowPath addLineToPoint:newPoint];
+        
+        newPoint = CGPointMake((0 + point.x), (size.height*((1+S_HEIGHT_RADIO)/2.0) + point.y));
+        [_arrowPath addLineToPoint:newPoint];
+         /**********************************   画一个箭头  *****************************************/
+    }
+    return _arrowPath;
 }
 
 -(void)didMoveToSuperview
 {
     [super didMoveToSuperview];
     
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:REFRESH_TIMEVAL target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
 }
 
 -(void)setupFields:(NSArray *)fields
@@ -248,7 +250,7 @@
 // 产生一个随机的生命周期
 -(NSInteger)randomAge
 {
-    return 10+arc4random_uniform(30);
+    return 50+arc4random_uniform(150);
 }
 
 
@@ -303,16 +305,20 @@
 
 -(void)timeFired
 {
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
+//        __weak typeof(self) weakSelf = self;
         [self.particles enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             WindParticle *particle = (WindParticle *)obj;
             [self updateCenter:particle];
+            
+            if (idx == self.particles.count-1) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self setNeedsDisplay];
+                });
+            }
         }];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self setNeedsDisplay];
-        });
     });
 }
 

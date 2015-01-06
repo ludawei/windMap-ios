@@ -15,11 +15,12 @@
 @property (nonatomic) CGFloat yv;           // y速度
 @property (nonatomic) CGFloat maxLength;
 @property (nonatomic) CGPoint center;
-@property (nonatomic,strong) UIColor *color;
+@property (nonatomic) CGPoint oldCenter;
 
 -(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv colorBright:(BOOL)isRight;
 -(void)updateWithCenter:(CGPoint)center xv:(CGFloat)xv yv:(CGFloat)yv;
 -(CGFloat)angleWithXY;
 -(CGFloat)length;
 -(CGFloat)initAge;
+-(UIColor *)color;
 @end

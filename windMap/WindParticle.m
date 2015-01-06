@@ -11,9 +11,9 @@
 @interface WindParticle ()
 
 @property (nonatomic) CGFloat vScale;       // 速度比例
-@property (nonatomic) CGPoint oldCenter;
 @property (nonatomic) CGFloat initAge;
 @property (nonatomic) BOOL isRight;
+@property (nonatomic,strong) UIColor *color;
 
 @end
 
@@ -25,7 +25,7 @@
 {
     if (self = [super init]) {
         
-        self.vScale = 8.0;
+        self.vScale = 10.0;
         self.oldCenter = CGPointMake(-1, -1);
     }
     
@@ -38,8 +38,12 @@
     self.yv = y/self.vScale;
     
     CGFloat s = sqrt(x*x + y*y)/self.maxLength;
+#if 1
     CGFloat t = floor(290*(1 - s)) - 45;
-    self.color = [UIColor colorWithHue:t/255.0 saturation:0.5f brightness:self.isRight?1.0f:0.5f alpha:0.8];
+    _color = [UIColor colorWithHue:t/255.0 saturation:0.8f brightness:self.isRight?1.0f:0.5f alpha:0.8f];
+#else
+    CGFloat t = floor(255*(1 - s));
+#endif
 }
 
 -(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv colorBright:(BOOL)isRight
@@ -52,6 +56,11 @@
     self.oldCenter = CGPointMake(-1, -1);
 }
 
+-(UIColor *)color
+{
+    return _color;
+}
+
 -(CGFloat)initAge
 {
     return _initAge;
@@ -62,7 +71,7 @@
     if (self.oldCenter.x == -1) {
         return 5;
     }
-    return sqrt((self.center.x-self.oldCenter.x)*(self.center.x-self.oldCenter.x) + (self.center.y-self.oldCenter.y)*(self.center.y-self.oldCenter.y));
+    return self.vScale * sqrt((self.center.x-self.oldCenter.x)*(self.center.x-self.oldCenter.x) + (self.center.y-self.oldCenter.y)*(self.center.y-self.oldCenter.y));
 }
 
 -(CGFloat)angleWithXY
@@ -94,6 +103,6 @@
 
 -(NSString *)description
 {
-    return [NSString stringWithFormat:@"center: %@, xv: %.2f, yv: %.2f", [NSValue valueWithCGPoint:self.center], self.xv, self.yv];
+    return [NSString stringWithFormat:@"center: %@, xv: %.2f, yv: %.2f, color:%@", [NSValue valueWithCGPoint:self.center], self.xv, self.yv, self.color];
 }
 @end
