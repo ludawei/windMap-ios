@@ -10,6 +10,8 @@
 #import "Vector.h"
 #import "WindParticle.h"
 #import "UIView+viewShot.h"
+#import <CoreFoundation/CoreFoundation.h>
+#import "Masonry.h"
 
 #define S_HEIGHT_RADIO 0.5
 #define S_WIDTH_RADIO 0.6
@@ -73,9 +75,13 @@
         }
         
         // 用来显示拖尾巴效果
-        self.imgView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.imgView = [[UIImageView alloc] init];
         self.imgView.alpha = 0.85;
         [self addSubview:self.imgView];
+        
+        [self.imgView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.mas_equalTo(self);
+        }];
     }
     
     return self;
@@ -104,8 +110,11 @@
     
     if (self.particleType == 2)
     {
-        UIImage *image = [self viewShot];
-        self.imgView.image = image;
+        @autoreleasepool {
+            UIImage *image = [self viewShot];
+            self.imgView.image = image;
+            image = nil;
+        }
     }
     
     for (int i=0; i<PARTICLE_LIMIT; i++) {
@@ -139,15 +148,13 @@
         CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
         CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
         CGContextSetFillColorWithColor(context, [particle.color CGColor]);
+        
         [self.arrowPath fill];
     }
     else if (self.particleType == 2)
     {
         /**********************************   画一条线段  *****************************************/
         CGContextSetStrokeColorWithColor(context, [particle.color CGColor]);
-        
-//        point = CGPointZero;
-//        CGPoint newPoint = point;
         
         CGContextSetLineWidth(context, 2);
         
@@ -305,10 +312,9 @@
 
 -(void)timeFired
 {
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-//        __weak typeof(self) weakSelf = self;
+        
+        //        __weak typeof(self) weakSelf = self;
         [self.particles enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             WindParticle *particle = (WindParticle *)obj;
             [self updateCenter:particle];
