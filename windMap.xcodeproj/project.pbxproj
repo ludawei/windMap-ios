@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		EE2478DF1A58D2CE003E4909 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = EE2478C01A58D2CE003E4909 /* mapapi.bundle */; };
 		EE2478E01A58D2CE003E4909 /* readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = EE2478C11A58D2CE003E4909 /* readme.txt */; };
-		EE2478E11A58D2CE003E4909 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2478C31A58D2CE003E4909 /* libbaidumapapi.a */; };
 		EE2478E21A58D2CE003E4909 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = EE2478C51A58D2CE003E4909 /* LICENSE */; };
 		EE2478E31A58D2CE003E4909 /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2478C81A58D2CE003E4909 /* MASCompositeConstraint.m */; };
 		EE2478E41A58D2CE003E4909 /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2478CB1A58D2CE003E4909 /* MASConstraint.m */; };
@@ -37,8 +36,9 @@
 		EE5DF2161A4BA3A300C36A1E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE5DF2141A4BA3A300C36A1E /* LaunchScreen.xib */; };
 		EE5DF2221A4BA3A400C36A1E /* windMapTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EE5DF2211A4BA3A400C36A1E /* windMapTests.m */; };
 		EE5DF2561A4BA65F00C36A1E /* WindParticle.m in Sources */ = {isa = PBXBuildFile; fileRef = EE5DF2551A4BA65F00C36A1E /* WindParticle.m */; };
+		EE9290A61A6365DD007E2672 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE9290A51A6365DD007E2672 /* libbaidumapapi.a */; };
+		EE9290A91A63671B007E2672 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE9290A81A63671B007E2672 /* libbaidumapapi.a */; };
 		EEBEE9E41A4D465F0033E882 /* NewMapCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */; };
-		EEBEE9E91A50E19F0033E882 /* TestView.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBEE9E81A50E19F0033E882 /* TestView.m */; };
 		EEDD344C1A52826E0045658E /* UIView+viewShot.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDD344B1A52826E0045658E /* UIView+viewShot.m */; };
 /* End PBXBuildFile section */
 
@@ -116,7 +116,6 @@
 		EE2478BF1A58D2CE003E4909 /* BMKVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMKVersion.h; sourceTree = "<group>"; };
 		EE2478C01A58D2CE003E4909 /* mapapi.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mapapi.bundle; sourceTree = "<group>"; };
 		EE2478C11A58D2CE003E4909 /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
-		EE2478C31A58D2CE003E4909 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbaidumapapi.a; sourceTree = "<group>"; };
 		EE2478C51A58D2CE003E4909 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		EE2478C71A58D2CE003E4909 /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
 		EE2478C81A58D2CE003E4909 /* MASCompositeConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASCompositeConstraint.m; sourceTree = "<group>"; };
@@ -166,10 +165,10 @@
 		EE5DF2211A4BA3A400C36A1E /* windMapTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = windMapTests.m; sourceTree = "<group>"; };
 		EE5DF2541A4BA65F00C36A1E /* WindParticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindParticle.h; sourceTree = "<group>"; };
 		EE5DF2551A4BA65F00C36A1E /* WindParticle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindParticle.m; sourceTree = "<group>"; };
+		EE9290A51A6365DD007E2672 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbaidumapapi.a; sourceTree = "<group>"; };
+		EE9290A81A63671B007E2672 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbaidumapapi.a; sourceTree = "<group>"; };
 		EEBEE9E21A4D465F0033E882 /* NewMapCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewMapCoverView.h; sourceTree = "<group>"; };
 		EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewMapCoverView.m; sourceTree = "<group>"; };
-		EEBEE9E71A50E19F0033E882 /* TestView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestView.h; sourceTree = "<group>"; };
-		EEBEE9E81A50E19F0033E882 /* TestView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestView.m; sourceTree = "<group>"; };
 		EEDD344A1A52826E0045658E /* UIView+viewShot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+viewShot.h"; sourceTree = "<group>"; };
 		EEDD344B1A52826E0045658E /* UIView+viewShot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+viewShot.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -182,8 +181,9 @@
 				EE2F72571A4D35C4003B3B9E /* Security.framework in Frameworks */,
 				EE2F72551A4D35BF003B3B9E /* CoreGraphics.framework in Frameworks */,
 				EE2F72531A4D35B3003B3B9E /* OpenGLES.framework in Frameworks */,
+				EE9290A91A63671B007E2672 /* libbaidumapapi.a in Frameworks */,
 				EE2F72511A4D35AE003B3B9E /* QuartzCore.framework in Frameworks */,
-				EE2478E11A58D2CE003E4909 /* libbaidumapapi.a in Frameworks */,
+				EE9290A61A6365DD007E2672 /* libbaidumapapi.a in Frameworks */,
 				EE2F724F1A4D35A6003B3B9E /* SystemConfiguration.framework in Frameworks */,
 				EE2F724D1A4D359B003B3B9E /* CoreLocation.framework in Frameworks */,
 			);
@@ -224,10 +224,11 @@
 		EE2478811A58D2CE003E4909 /* BaiduMap_IOSSDK_v2.6.0_Lib */ = {
 			isa = PBXGroup;
 			children = (
+				EE9290A71A63671B007E2672 /* Release-iphonesimulator */,
+				EE9290A41A6365DD007E2672 /* Release-iphoneos */,
 				EE2478821A58D2CE003E4909 /* inc */,
 				EE2478C01A58D2CE003E4909 /* mapapi.bundle */,
 				EE2478C11A58D2CE003E4909 /* readme.txt */,
-				EE2478C21A58D2CE003E4909 /* Release-iphoneos */,
 			);
 			path = BaiduMap_IOSSDK_v2.6.0_Lib;
 			sourceTree = "<group>";
@@ -298,14 +299,6 @@
 				EE2478BF1A58D2CE003E4909 /* BMKVersion.h */,
 			);
 			path = inc;
-			sourceTree = "<group>";
-		};
-		EE2478C21A58D2CE003E4909 /* Release-iphoneos */ = {
-			isa = PBXGroup;
-			children = (
-				EE2478C31A58D2CE003E4909 /* libbaidumapapi.a */,
-			);
-			path = "Release-iphoneos";
 			sourceTree = "<group>";
 		};
 		EE2478C41A58D2CE003E4909 /* Masonry */ = {
@@ -386,8 +379,6 @@
 				EE2F72011A4C0670003B3B9E /* Vector.m */,
 				EEBEE9E21A4D465F0033E882 /* NewMapCoverView.h */,
 				EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */,
-				EEBEE9E71A50E19F0033E882 /* TestView.h */,
-				EEBEE9E81A50E19F0033E882 /* TestView.m */,
 				EEDD344A1A52826E0045658E /* UIView+viewShot.h */,
 				EEDD344B1A52826E0045658E /* UIView+viewShot.m */,
 			);
@@ -418,6 +409,22 @@
 				EE5DF2201A4BA3A400C36A1E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EE9290A41A6365DD007E2672 /* Release-iphoneos */ = {
+			isa = PBXGroup;
+			children = (
+				EE9290A51A6365DD007E2672 /* libbaidumapapi.a */,
+			);
+			path = "Release-iphoneos";
+			sourceTree = "<group>";
+		};
+		EE9290A71A63671B007E2672 /* Release-iphonesimulator */ = {
+			isa = PBXGroup;
+			children = (
+				EE9290A81A63671B007E2672 /* libbaidumapapi.a */,
+			);
+			path = "Release-iphonesimulator";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -540,7 +547,6 @@
 				EE5DF2081A4BA3A300C36A1E /* main.m in Sources */,
 				EE2478E51A58D2CE003E4909 /* MASConstraintMaker.m in Sources */,
 				EE2478E81A58D2CE003E4909 /* MASViewConstraint.m in Sources */,
-				EEBEE9E91A50E19F0033E882 /* TestView.m in Sources */,
 				EE2478E71A58D2CE003E4909 /* MASViewAttribute.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -663,13 +669,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
 				INFOPLIST_FILE = windMap/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/BaiduMap_IOSSDK_v2.6.0_Lib/Release-iphoneos",
-					"$(PROJECT_DIR)/BaiduMap_IOSSDK_v2.6.0_Lib/Release-iphonesimulator",
-					"$(PROJECT_DIR)/ThirdLibs/BaiduMap_IOSSDK_v2.6.0_Lib/Release-iphoneos",
+					"\"$(PROJECT_DIR)/ThirdLibs/BaiduMap_IOSSDK_v2.6.0_Lib/Release$(EFFECTIVE_PLATFORM_NAME)\"",
+					"$(PROJECT_DIR)/ThirdLibs/BaiduMap_IOSSDK_v2.6.0_Lib/Release-iphonesimulator",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -680,13 +689,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
 				INFOPLIST_FILE = windMap/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/BaiduMap_IOSSDK_v2.6.0_Lib/Release-iphoneos",
-					"$(PROJECT_DIR)/BaiduMap_IOSSDK_v2.6.0_Lib/Release-iphonesimulator",
-					"$(PROJECT_DIR)/ThirdLibs/BaiduMap_IOSSDK_v2.6.0_Lib/Release-iphoneos",
+					"\"$(PROJECT_DIR)/ThirdLibs/BaiduMap_IOSSDK_v2.6.0_Lib/Release$(EFFECTIVE_PLATFORM_NAME)\"",
+					"$(PROJECT_DIR)/ThirdLibs/BaiduMap_IOSSDK_v2.6.0_Lib/Release-iphonesimulator",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

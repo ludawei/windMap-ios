@@ -11,12 +11,13 @@
 #import "Masonry.h"
 #import "BMapKit.h"
 #import "NewMapCoverView.h"
-#import "TestView.h"
+#import <MapKit/MapKit.h>
 
-@interface ViewController ()<BMKMapViewDelegate>
+@interface ViewController ()<BMKMapViewDelegate, MKMapViewDelegate>
 
 @property (nonatomic,strong) NewMapCoverView *mainView;
 @property (nonatomic,strong) BMKMapView *mapView;
+@property (nonatomic,strong) MKMapView *mapView1;
 @property (nonatomic,strong) UISegmentedControl *buttons,*buttons1;
 
 @end
@@ -33,7 +34,6 @@
     
     [self initMapView];
     
-#if 1
     NSString *data = [NSString stringWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"data" withExtension:nil] encoding:NSUTF8StringEncoding error:nil];
     NSArray *fields = [data componentsSeparatedByString:@",\n"];
     
@@ -50,17 +50,20 @@
     [self.mainView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self.view);
     }];
-#else
-    TestView *view = [[TestView alloc] initWithFrame:self.view.bounds];
-    view.translatesAutoresizingMaskIntoConstraints = YES;
-    view.frame = self.view.bounds;
-    
-    [self.view addSubview:view];
-#endif
     
     // 注册
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+-(BMKOverlayView *)mapView:(BMKMapView *)mapView viewForOverlay:(id<BMKOverlay>)overlay
+{
+    if ([overlay isKindOfClass:[BMKGroundOverlay class]])
+    {
+        BMKGroundOverlayView* groundView = [[BMKGroundOverlayView alloc] initWithOverlay:overlay];
+        return groundView;
+    }
+    return nil;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -174,9 +177,10 @@
 
 -(void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-//    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(mapView.region.center.latitude - mapView.region.span.latitudeDelta/2, mapView.region.center.longitude - mapView.region.span.longitudeDelta/2);
-//    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(mapView.region.center.latitude + mapView.region.span.latitudeDelta/2, mapView.region.center.longitude + mapView.region.span.longitudeDelta/2);
-    
+    CLLocationCoordinate2D coor1 = CLLocationCoordinate2DMake(mapView.region.center.latitude - mapView.region.span.latitudeDelta/2, mapView.region.center.longitude - mapView.region.span.longitudeDelta/2);
+    CLLocationCoordinate2D coor2 = CLLocationCoordinate2DMake(mapView.region.center.latitude + mapView.region.span.latitudeDelta/2, mapView.region.center.longitude + mapView.region.span.longitudeDelta/2);
+
+    NSLog(@"%f, %f, %f, %f", coor1.latitude, coor1.longitude, coor2.latitude, coor2.longitude);
 //    CGPoint point1 = [self.mapView convertCoordinate:coor1 toPointToView:self.mapView];
 //    CGPoint point2 = [self.mapView convertCoordinate:coor2 toPointToView:self.mapView];
 //    NSLog(@"%@, %@", [NSValue valueWithCGPoint:point1], [NSValue valueWithCGPoint:point2]);

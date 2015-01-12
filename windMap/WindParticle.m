@@ -38,12 +38,8 @@
     self.yv = y/self.vScale;
     
     CGFloat s = sqrt(x*x + y*y)/self.maxLength;
-#if 1
     CGFloat t = floor(290*(1 - s)) - 45;
-    _color = [UIColor colorWithHue:t/255.0 saturation:0.8f brightness:self.isRight?1.0f:0.5f alpha:0.8f];
-#else
-    CGFloat t = floor(255*(1 - s));
-#endif
+    _color = [UIColor colorWithHue:t/255.0 saturation:0.7f brightness:self.isRight?1.0f:0.5f alpha:1.0f];
 }
 
 -(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv colorBright:(BOOL)isRight
