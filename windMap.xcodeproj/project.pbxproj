@@ -38,6 +38,8 @@
 		EE5DF2561A4BA65F00C36A1E /* WindParticle.m in Sources */ = {isa = PBXBuildFile; fileRef = EE5DF2551A4BA65F00C36A1E /* WindParticle.m */; };
 		EE9290A61A6365DD007E2672 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE9290A51A6365DD007E2672 /* libbaidumapapi.a */; };
 		EE9290A91A63671B007E2672 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE9290A81A63671B007E2672 /* libbaidumapapi.a */; };
+		EE9290AC1A636B5F007E2672 /* 1月 12, 2015 10:37.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE9290AA1A636B5F007E2672 /* 1月 12, 2015 10:37.gif */; };
+		EE9290AD1A636B5F007E2672 /* 1月 12, 2015 10:38.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE9290AB1A636B5F007E2672 /* 1月 12, 2015 10:38.gif */; };
 		EEBEE9E41A4D465F0033E882 /* NewMapCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */; };
 		EEDD344C1A52826E0045658E /* UIView+viewShot.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDD344B1A52826E0045658E /* UIView+viewShot.m */; };
 /* End PBXBuildFile section */
@@ -167,6 +169,8 @@
 		EE5DF2551A4BA65F00C36A1E /* WindParticle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindParticle.m; sourceTree = "<group>"; };
 		EE9290A51A6365DD007E2672 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbaidumapapi.a; sourceTree = "<group>"; };
 		EE9290A81A63671B007E2672 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbaidumapapi.a; sourceTree = "<group>"; };
+		EE9290AA1A636B5F007E2672 /* 1月 12, 2015 10:37.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "1月 12, 2015 10:37.gif"; sourceTree = "<group>"; };
+		EE9290AB1A636B5F007E2672 /* 1月 12, 2015 10:38.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "1月 12, 2015 10:38.gif"; sourceTree = "<group>"; };
 		EEBEE9E21A4D465F0033E882 /* NewMapCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewMapCoverView.h; sourceTree = "<group>"; };
 		EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewMapCoverView.m; sourceTree = "<group>"; };
 		EEDD344A1A52826E0045658E /* UIView+viewShot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+viewShot.h"; sourceTree = "<group>"; };
@@ -388,6 +392,8 @@
 		EE5DF2051A4BA3A300C36A1E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				EE9290AA1A636B5F007E2672 /* 1月 12, 2015 10:37.gif */,
+				EE9290AB1A636B5F007E2672 /* 1月 12, 2015 10:38.gif */,
 				EE5DF2061A4BA3A300C36A1E /* Info.plist */,
 				EE5DF2071A4BA3A300C36A1E /* main.m */,
 			);
@@ -509,10 +515,12 @@
 			files = (
 				EE2478E01A58D2CE003E4909 /* readme.txt in Resources */,
 				EE5DF2111A4BA3A300C36A1E /* Main.storyboard in Resources */,
+				EE9290AD1A636B5F007E2672 /* 1月 12, 2015 10:38.gif in Resources */,
 				EE2478DF1A58D2CE003E4909 /* mapapi.bundle in Resources */,
 				EE2478E21A58D2CE003E4909 /* LICENSE in Resources */,
 				EE5DF2161A4BA3A300C36A1E /* LaunchScreen.xib in Resources */,
 				EE5DF2131A4BA3A300C36A1E /* Images.xcassets in Resources */,
+				EE9290AC1A636B5F007E2672 /* 1月 12, 2015 10:37.gif in Resources */,
 				EE2F71FF1A4BBCCB003B3B9E /* data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
