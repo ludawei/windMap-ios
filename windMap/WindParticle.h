@@ -17,10 +17,12 @@
 @property (nonatomic) CGPoint center;
 @property (nonatomic) CGPoint oldCenter;
 
--(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv colorBright:(BOOL)isRight;
+@property (nonatomic) CGFloat colorHue;
+
+-(void)resetWithCenter:(CGPoint)center age:(NSInteger)age xv:(CGFloat)xv yv:(CGFloat)yv;
 -(void)updateWithCenter:(CGPoint)center xv:(CGFloat)xv yv:(CGFloat)yv;
 -(CGFloat)angleWithXY;
--(CGFloat)length;
 -(CGFloat)initAge;
--(UIColor *)color;
+-(CGFloat)length;
+-(BOOL)isShow;
 @end

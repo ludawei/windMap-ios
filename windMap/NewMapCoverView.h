@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "BMapKit.h"
+#import <MapKit/MapKit.h>
 
 @interface NewMapCoverView : UIView
 
-@property (nonatomic,strong) BMKMapView *mapView;
+@property (nonatomic,strong) MKMapView *mapView;
 @property (nonatomic) int particleType;         // 1，箭头；2，线段
+@property (nonatomic) NSInteger partNum;
 
 -(id)initWithFrame:(CGRect)frame fields:(NSArray *)fields;
 -(void)stop;

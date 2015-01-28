@@ -7,7 +7,7 @@
 //
 
 #import "NewMapCoverView.h"
-#import "Vector.h"
+#import "MyVector.h"
 #import "WindParticle.h"
 #import "UIView+viewShot.h"
 #import <CoreFoundation/CoreFoundation.h>
@@ -20,17 +20,25 @@
 #define PARTICLE_HEIGHT 4
 
 #define ARC4RANDOM_MAX      0x100000000
-#define PARTICLE_LIMIT      300
+#define PARTICLE_LIMIT      700
+#define PARTICLE_SHOW_LIMIT 400
 
-#define REFRESH_TIMEVAL     0.04f
+#define REFRESH_TIMEVAL_1   0.04f
+#define REFRESH_TIMEVAL_2   0.08f
+
+#define USE_TIMER 1
 
 @interface NewMapCoverView ()
 {
-//    BOOL testFlag;
-    int imageTimeCount;
+//    CGFloat mapRadio;
 }
 
-@property (nonatomic,strong) NSTimer *timer;
+#ifdef USE_TIMER
+@property (nonatomic,strong) NSTimer *timer;            // cpu 60%~70%
+#else
+@property (nonatomic,strong) CADisplayLink *timer;      // cpu 70%~80%
+#endif
+@property (nonatomic) CGFloat timeval;
 
 @property (nonatomic) CGFloat x0,y0,x1,y1;
 @property (nonatomic) NSInteger gridWidth,gridHeight;
@@ -50,7 +58,7 @@
 -(id)initWithFrame:(CGRect)frame fields:(NSArray *)fields
 {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
 //        self.alpha = 0.8;
         
         self.particles = [NSMutableArray arrayWithCapacity:PARTICLE_LIMIT];
@@ -62,6 +70,10 @@
         self.gridHeight = 161;
         
         [self setupFields:fields];
+        
+        if (!self.partNum) {
+            self.partNum = PARTICLE_LIMIT;
+        }
         
         for (int i = 0; i<PARTICLE_LIMIT; i++) {
             WindParticle *particle = [[WindParticle alloc] init];
@@ -76,7 +88,7 @@
         
         // 用来显示拖尾巴效果
         self.imgView = [[UIImageView alloc] init];
-        self.imgView.alpha = 0.85;
+        self.imgView.alpha = 0.9;
         [self addSubview:self.imgView];
         
         [self.imgView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -92,11 +104,21 @@
     _particleType = particleType;
     if (particleType == 1) {
         self.imgView.hidden = YES;
+        self.timeval = REFRESH_TIMEVAL_1;
     }
     else
     {
         self.imgView.hidden = NO;
+        self.timeval = REFRESH_TIMEVAL_2;
     }
+    
+    self.hidden = YES;
+    self.imgView.image = nil;
+    self.hidden = NO;
+    
+    [self.timer invalidate];
+    self.timer = nil;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:self.timeval target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
 }
 
 // Only override drawRect: if you perform custom drawing.
@@ -112,29 +134,42 @@
     {
         @autoreleasepool {
             UIImage *image = [self viewShot];
-            self.imgView.image = image;
-            image = nil;
+            if (image) {
+                self.imgView.image = image;
+                image = nil;
+            }
+            else
+            {
+                NSLog(@"123");
+            }
         }
     }
     
-    for (int i=0; i<PARTICLE_LIMIT; i++) {
+    NSInteger showCount = 0;
+    for (int i=0; i<self.partNum; i++) {
         
-        [self drawPathInContext:context particle:[self.particles objectAtIndex:i]];
+        if (showCount >= PARTICLE_SHOW_LIMIT) {
+            break;
+        }
+        
+        if ([self drawPathInContext:context particle:[self.particles objectAtIndex:i]]) {
+            showCount++;
+        }
     }
 
     UIGraphicsPopContext();
 }
 
--(void)drawPathInContext:(CGContextRef)context particle:(WindParticle *)particle
+-(BOOL)drawPathInContext:(CGContextRef)context particle:(WindParticle *)particle
 {
-    if (particle.age <= 0) {
-        return;
+    if (particle.age <= 0 || !particle.isShow) {
+        return NO;
     }
     
     CGSize size = CGSizeMake(PARTICLE_WIDTH, PARTICLE_HEIGHT);
     CGPoint center = particle.center;
     CGPoint point = CGPointMake(center.x - size.width/2.0, center.y - size.height/2.0);
-
+    
     CGContextSaveGState(context);
     
     CGFloat temp_alpha = 10.0f;
@@ -144,31 +179,44 @@
     }
     CGContextSetAlpha(context, alpha);
     
+    UIColor *partcicleColor = [UIColor colorWithHue:1.0-(float)particle.colorHue/255.0f saturation:0.7f brightness:self.mapView.mapType==MKMapTypeSatellite?1.0f:0.5f alpha:0.8f];
+    
     if (self.particleType == 1) {
         CGContextTranslateCTM(context, point.x, point.y);       // 移动原点
         CGContextRotateCTM(context, particle.angleWithXY);      // 旋转画布
-        CGContextSetFillColorWithColor(context, [particle.color CGColor]);
+        
+        CGContextSetFillColorWithColor(context, [partcicleColor CGColor]);
         
         [self.arrowPath fill];
+        
     }
     else if (self.particleType == 2)
     {
         /**********************************   画一条线段  *****************************************/
-        CGContextSetStrokeColorWithColor(context, [particle.color CGColor]);
+        if (particle.oldCenter.x != -1) {
+            CGContextSetStrokeColorWithColor(context, [partcicleColor CGColor]);
+            
+            CGContextSetLineWidth(context, 2);
+            
+            CGPoint newPoint = CGPointMake(particle.center.x, particle.center.y);
+            CGContextMoveToPoint(context, newPoint.x, newPoint.y);
+            
+            newPoint = CGPointMake(particle.oldCenter.x, particle.oldCenter.y);
+            CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
+            
+            CGContextStrokePath(context);
+            
+//                        if ([self.particles indexOfObject:particle] >= self.particles.count-1) {
+//                            CGContextStrokePath(context);
+//                        }
+        }
         
-        CGContextSetLineWidth(context, 2);
-        
-        CGPoint newPoint = CGPointMake(particle.center.x, particle.center.y);
-        CGContextMoveToPoint(context, newPoint.x, newPoint.y);
-        
-        newPoint = CGPointMake(particle.oldCenter.x, particle.oldCenter.y);
-        CGContextAddLineToPoint(context, newPoint.x, newPoint.y);
-        
-        CGContextStrokePath(context);
         /**********************************   画一条线段  *****************************************/
     }
     
     CGContextRestoreGState(context);
+    
+    return YES;
 }
 
 -(UIBezierPath *)arrowPath
@@ -211,7 +259,15 @@
 {
     [super didMoveToSuperview];
     
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:REFRESH_TIMEVAL target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
+#ifdef USE_TIMER
+//    self.timer = [NSTimer scheduledTimerWithTimeInterval:REFRESH_TIMEVAL_2 target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
+//    [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
+#else
+    self.timer = [CADisplayLink displayLinkWithTarget:self selector:@selector(timeFired)];
+    self.timer.frameInterval = 2;
+    [self.timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    [self.timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:UITrackingRunLoopMode];
+#endif
 }
 
 -(void)setupFields:(NSArray *)fields
@@ -223,13 +279,11 @@
             NSArray *vs = [str componentsSeparatedByString:@","];
             if (vs.count == 2) {
                 
-                Vector *v = [Vector new];
-                v.x = [vs.firstObject floatValue];
-                v.y = [vs.lastObject floatValue];
+                CGVector v = CGVectorMake([vs.firstObject floatValue], [vs.lastObject floatValue]);
                 
-                [arr addObject:v];
+                [arr addObject:[NSValue valueWithCGVector:v]];
                 
-                self.maxLength = MAX(self.maxLength, [v length]);
+                self.maxLength = MAX(self.maxLength, [MyVector length:v]);
             }
         }
     }];
@@ -281,10 +335,10 @@
     CGFloat fb = b - nb;
     
     NSInteger index = self.gridHeight;
-    return [(Vector *)[self.fields objectAtIndex:MIN((na*index+nb), self.fields.count-1)] ValueWithIsX:isX] * (1 - fa) * (1 - fb) +
-    [(Vector *)[self.fields objectAtIndex:MIN((ma*index+nb), self.fields.count-1)] ValueWithIsX:isX] * fa * (1 - fb) +
-    [(Vector *)[self.fields objectAtIndex:MIN((na*index+mb), self.fields.count-1)] ValueWithIsX:isX] * (1 - fa) * fb +
-    [(Vector *)[self.fields objectAtIndex:MIN((ma*index+mb), self.fields.count-1)] ValueWithIsX:isX] * fa * fb;
+    return [MyVector ValueWithIsX:isX v:[[self.fields objectAtIndex:MIN((na*index+nb), self.fields.count-1)] CGVectorValue]] * (1 - fa) * (1 - fb) +
+    [MyVector ValueWithIsX:isX v:[[self.fields objectAtIndex:MIN((ma*index+nb), self.fields.count-1)] CGVectorValue]] * fa * (1 - fb) +
+    [MyVector ValueWithIsX:isX v:[[self.fields objectAtIndex:MIN((na*index+mb), self.fields.count-1)] CGVectorValue]] * (1 - fa) * fb +
+    [MyVector ValueWithIsX:isX v:[[self.fields objectAtIndex:MIN((ma*index+mb), self.fields.count-1)] CGVectorValue]] * fa * fb;
 }
 
 /**
@@ -294,20 +348,17 @@
  *
  *  @return 得到一个速度Vector
  */
--(Vector *)vecorWithPoint:(CGPoint)point
+-(CGVector)vecorWithPoint:(CGPoint)point
 {
-//    point = CGPointMake(-178.875,-90);
+    //    point = CGPointMake(-178.875,-90);
     CGFloat a = (self.gridWidth - 1 - 1e-6)*(point.x - self.x0)/(self.x1 - self.x0);
     CGFloat b = (self.gridHeight - 1 - 1e-6)*(point.y - self.y0)/(self.y1 - self.y0);
     CGFloat vx = [self bilinearWithIsX:YES a:a b:b];
     CGFloat vy = [self bilinearWithIsX:NO a:a b:b];
     
-//    NSLog(@"vx: %f, vy: %f", vx, vy);
-    Vector *v = [Vector new];
-    v.x = vx;
-    v.y = vy;
+    //    NSLog(@"vx: %f, vy: %f", vx, vy);
     
-    return v;
+    return CGVectorMake(vx, vy);
 }
 
 -(void)timeFired
@@ -333,38 +384,53 @@
     particle.age--;
     if (particle.age <= 0) {
         CGPoint center = [self randomParticleCenter];
-        Vector *vect = [self vecorWithPoint:[self mapPointFromViewPoint:center]];
-        [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y colorBright:self.mapView.mapType==BMKMapTypeSatellite];
+        CGVector vect = [self vecorWithPoint:[self mapPointFromViewPoint:center]];
+        [particle resetWithCenter:center age:[self randomAge] xv:vect.dx yv:vect.dy];
     }
     else
     {
         // 经度自下向上，画布自上向下，故取反
-        CGPoint center = CGPointMake(particle.center.x+particle.xv, particle.center.y+(-particle.yv));
+        CGPoint center = CGPointMake(particle.center.x+particle.xv*(self.timeval/REFRESH_TIMEVAL_1), particle.center.y+(-particle.yv)*(self.timeval/REFRESH_TIMEVAL_1));
         CGRect disRect = self.bounds;
         CGRect disMapRect = CGRectMake(self.x0, self.y0, self.x1-self.x0, self.y1-self.y0);
+        
+        // 卫星地图，只显示有卫星的区域
+        if (self.mapView.mapType==MKMapTypeSatellite) {
+            disMapRect.origin.y = -60;
+            disMapRect.size.height = 139;
+        }
         
         CGPoint mapPoint = [self mapPointFromViewPoint:center];
         if (!CGRectContainsPoint(disRect, center) || !CGRectContainsPoint(disMapRect, mapPoint)) {
             center = [self randomParticleCenter];
-            Vector *vect = [self vecorWithPoint:[self mapPointFromViewPoint:center]];
-            [particle resetWithCenter:center age:[self randomAge] xv:vect.x yv:vect.y colorBright:self.mapView.mapType==BMKMapTypeSatellite];
+            CGVector vect = [self vecorWithPoint:[self mapPointFromViewPoint:center]];
+            [particle resetWithCenter:center age:[self randomAge] xv:vect.dx yv:vect.dy];
         }
         
-        Vector *vect = [self vecorWithPoint:mapPoint];
-        [particle updateWithCenter:center xv:vect.x yv:vect.y];
+        CGVector vect = [self vecorWithPoint:mapPoint];
+        [particle updateWithCenter:center xv:vect.dx yv:vect.dy];
     }
 }
 
 -(void)stop
 {
+#ifdef USE_TIMER
     [self.timer setFireDate:[NSDate distantFuture]];
+#else
+    self.timer.paused = YES;
+#endif
     self.hidden = YES;
 }
 
 -(void)restart
 {
+#ifdef USE_TIMER
     [self.timer setFireDate:[NSDate distantPast]];
+#else
+    self.timer.paused = NO;
+#endif
     self.hidden = NO;
+    self.imgView.image = nil;
 }
 
 // 返回view上的点对应在地图上的位置

@@ -20,14 +20,16 @@
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0.0);
         if ([self respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
             [self drawViewHierarchyInRect:self.bounds
-                       afterScreenUpdates:YES];
+                       afterScreenUpdates:NO];
         }
         else
         {
             [self.layer renderInContext:UIGraphicsGetCurrentContext()];
         }
+//        [self.layer renderInContext:UIGraphicsGetCurrentContext()];
         
         image = UIGraphicsGetImageFromCurrentImageContext();
+//        NSLog(@"%@", image);
         
         UIGraphicsEndImageContext();
     }
@@ -45,14 +47,15 @@
     UIImage *image;
     @autoreleasepool {
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0.0);
-        if ([self respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
-            [self drawViewHierarchyInRect:self.bounds
-                       afterScreenUpdates:YES];
-        }
-        else
-        {
-            [self.layer renderInContext:UIGraphicsGetCurrentContext()];
-        }
+//        if ([self respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
+//            [self drawViewHierarchyInRect:self.bounds
+//                       afterScreenUpdates:YES];
+//        }
+//        else
+//        {
+//            [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+//        }
+        [self.layer renderInContext:UIGraphicsGetCurrentContext()];
         
         image = UIGraphicsGetImageFromCurrentImageContext();
         
