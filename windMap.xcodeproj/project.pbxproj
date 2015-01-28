@@ -26,6 +26,7 @@
 		EE2F72551A4D35BF003B3B9E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2F72541A4D35BF003B3B9E /* CoreGraphics.framework */; };
 		EE2F72571A4D35C4003B3B9E /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2F72561A4D35C4003B3B9E /* Security.framework */; };
 		EE3DBE301A779EEF00495F8A /* CWMyMotionStreakView.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3DBE2F1A779EEF00495F8A /* CWMyMotionStreakView.m */; };
+		EE3DBE371A788D0800495F8A /* windmap1.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE3DBE361A788D0800495F8A /* windmap1.gif */; };
 		EE5DF2081A4BA3A300C36A1E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE5DF2071A4BA3A300C36A1E /* main.m */; };
 		EE5DF20B1A4BA3A300C36A1E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE5DF20A1A4BA3A300C36A1E /* AppDelegate.m */; };
 		EE5DF20E1A4BA3A300C36A1E /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = EE5DF20D1A4BA3A300C36A1E /* ViewController.mm */; };
@@ -33,8 +34,6 @@
 		EE5DF2131A4BA3A300C36A1E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE5DF2121A4BA3A300C36A1E /* Images.xcassets */; };
 		EE5DF2161A4BA3A300C36A1E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE5DF2141A4BA3A300C36A1E /* LaunchScreen.xib */; };
 		EE5DF2221A4BA3A400C36A1E /* windMapTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EE5DF2211A4BA3A400C36A1E /* windMapTests.m */; };
-		EE9290B01A639880007E2672 /* windMap1.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE9290AE1A639880007E2672 /* windMap1.gif */; };
-		EE9290B11A639880007E2672 /* windMap2.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE9290AF1A639880007E2672 /* windMap2.gif */; };
 		EEBEE9E41A4D465F0033E882 /* NewMapCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */; };
 		EEDD344C1A52826E0045658E /* UIView+viewShot.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDD344B1A52826E0045658E /* UIView+viewShot.m */; };
 		EEEC145A1A77647E000FBF87 /* MyVector.m in Sources */ = {isa = PBXBuildFile; fileRef = EEEC14571A77647E000FBF87 /* MyVector.m */; };
@@ -86,6 +85,7 @@
 		EE2F72561A4D35C4003B3B9E /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		EE3DBE2E1A779EEF00495F8A /* CWMyMotionStreakView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWMyMotionStreakView.h; sourceTree = "<group>"; };
 		EE3DBE2F1A779EEF00495F8A /* CWMyMotionStreakView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWMyMotionStreakView.m; sourceTree = "<group>"; };
+		EE3DBE361A788D0800495F8A /* windmap1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = windmap1.gif; sourceTree = "<group>"; };
 		EE5DF2021A4BA3A300C36A1E /* windMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = windMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE5DF2061A4BA3A300C36A1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE5DF2071A4BA3A300C36A1E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -99,8 +99,6 @@
 		EE5DF21B1A4BA3A400C36A1E /* windMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = windMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE5DF2201A4BA3A400C36A1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE5DF2211A4BA3A400C36A1E /* windMapTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = windMapTests.m; sourceTree = "<group>"; };
-		EE9290AE1A639880007E2672 /* windMap1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = windMap1.gif; sourceTree = "<group>"; };
-		EE9290AF1A639880007E2672 /* windMap2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = windMap2.gif; sourceTree = "<group>"; };
 		EEBEE9E21A4D465F0033E882 /* NewMapCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewMapCoverView.h; sourceTree = "<group>"; };
 		EEBEE9E31A4D465F0033E882 /* NewMapCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewMapCoverView.m; sourceTree = "<group>"; };
 		EEDD344A1A52826E0045658E /* UIView+viewShot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+viewShot.h"; sourceTree = "<group>"; };
@@ -199,8 +197,7 @@
 		EE5DF1F91A4BA3A300C36A1E = {
 			isa = PBXGroup;
 			children = (
-				EE9290AE1A639880007E2672 /* windMap1.gif */,
-				EE9290AF1A639880007E2672 /* windMap2.gif */,
+				EE3DBE361A788D0800495F8A /* windmap1.gif */,
 				EE2478801A58D299003E4909 /* ThirdLibs */,
 				EE24787F1A58D271003E4909 /* frameworks */,
 				EE5DF2041A4BA3A300C36A1E /* windMap */,
@@ -350,9 +347,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE9290B11A639880007E2672 /* windMap2.gif in Resources */,
-				EE9290B01A639880007E2672 /* windMap1.gif in Resources */,
 				EE5DF2111A4BA3A300C36A1E /* Main.storyboard in Resources */,
+				EE3DBE371A788D0800495F8A /* windmap1.gif in Resources */,
 				EE2478E21A58D2CE003E4909 /* LICENSE in Resources */,
 				EE5DF2161A4BA3A300C36A1E /* LaunchScreen.xib in Resources */,
 				EE5DF2131A4BA3A300C36A1E /* Images.xcassets in Resources */,

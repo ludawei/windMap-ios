@@ -50,8 +50,6 @@
     for (NSInteger i=self.imgLayers.count-1; i>=0; i--) {
         CALayer *layer = [self.imgLayers objectAtIndex:i];
         layer.opacity = 1.0f-1.0f*i/self.imgLayers.count;
-        
-//        layer.opacity = 0;
     }
 }
 
@@ -67,12 +65,11 @@
     layer.frame = self.bounds;
 //    layer.contents = (id)image.CGImage;
     layer.contents = layer1.contents;
-    layer.actions = @{@"opacity": [NSNull null]};
+    layer.actions = @{@"opacity": [NSNull null]};              // 取消动画
     [self.layer addSublayer:layer];
     
     [self.imgLayers insertObject:layer atIndex:0];
     
-//    layer.
     for (NSInteger i=self.imgLayers.count-1; i>=0; i--) {
         CALayer *layer = [self.imgLayers objectAtIndex:i];
         layer.opacity = layer.opacity - 1.0/LIMIT;
