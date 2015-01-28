@@ -8,7 +8,7 @@
 
 #import "CWMyMotionStreakView.h"
 
-#define LIMIT 30
+#define LIMIT 20
 
 @interface CWMyMotionStreakView ()
 
@@ -22,33 +22,61 @@
 {
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor clearColor];
+        self.userInteractionEnabled = NO;
         self.imgLayers = [NSMutableArray arrayWithCapacity:LIMIT];
     }
     
     return self;
 }
 
--(void)drawRect:(CGRect)rect
-{
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextClearRect(context, self.bounds);
-    
-    for (NSInteger i=self.imgLayers.count-1; i>=0; i--) {
-        
-        CGContextSaveGState(context);
-        CGContextSetAlpha(context, 1.0f-1.0f*i/self.imgLayers.count);
-        CGContextDrawImage(context, self.bounds, [self.imgLayers[i] CGImage]);
-        CGContextRestoreGState(context);
-    }
-}
-
 -(void)addImage:(UIImage *)image
 {
     if (self.imgLayers.count == LIMIT) {
+        CALayer *layer = self.imgLayers.lastObject;
+        [layer removeFromSuperlayer];
         [self.imgLayers removeLastObject];
     }
-    [self.imgLayers insertObject:image atIndex:0];
+//    [self.imgLayers insertObject:image atIndex:0];
     
-    [self setNeedsDisplay];
+    CALayer *layer = [CALayer layer];
+    layer.frame = self.bounds;
+    layer.contents = (id)image.CGImage;
+    [self.layer addSublayer:layer];
+    
+//    [self drawLayer:layer inContext:CGContextcu]
+    
+    [self.imgLayers insertObject:layer atIndex:0];
+    
+    for (NSInteger i=self.imgLayers.count-1; i>=0; i--) {
+        CALayer *layer = [self.imgLayers objectAtIndex:i];
+        layer.opacity = 1.0f-1.0f*i/self.imgLayers.count;
+        
+//        layer.opacity = 0;
+    }
 }
+
+-(void)addLayer:(CALayer *)layer1
+{
+    if (self.imgLayers.count == LIMIT) {
+        CALayer *layer = self.imgLayers.lastObject;
+        [layer removeFromSuperlayer];
+        [self.imgLayers removeLastObject];
+    }
+    
+    CALayer *layer = [CALayer layer];
+    layer.frame = self.bounds;
+//    layer.contents = (id)image.CGImage;
+    layer.contents = layer1.contents;
+    layer.actions = @{@"opacity": [NSNull null]};
+    [self.layer addSublayer:layer];
+    
+    [self.imgLayers insertObject:layer atIndex:0];
+    
+//    layer.
+    for (NSInteger i=self.imgLayers.count-1; i>=0; i--) {
+        CALayer *layer = [self.imgLayers objectAtIndex:i];
+        layer.opacity = layer.opacity - 1.0/LIMIT;
+    }
+}
+
 @end

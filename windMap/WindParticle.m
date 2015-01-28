@@ -24,7 +24,7 @@
 {
     if (self = [super init]) {
         
-        self.vScale = 12.0;//10.0;
+        self.vScale = 10.0;//10.0;
         self.oldCenter = CGPointMake(-1, -1);
     }
     

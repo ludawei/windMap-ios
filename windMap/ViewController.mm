@@ -43,6 +43,13 @@
     self.mainView.translatesAutoresizingMaskIntoConstraints = YES;
     self.mainView.frame = self.view.bounds;
     
+    CWMyMotionStreakView *motionView = [[CWMyMotionStreakView alloc] init];
+    [self.view addSubview:motionView];
+    [motionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(self.view);
+    }];
+    self.mainView.motionView = motionView;
+    
     [self.view addSubview:self.mainView];
     
     [self.mainView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -96,22 +103,22 @@
         make.size.mas_equalTo(CGSizeMake(100, 32));
     }];
     
-    buttons.selectedSegmentIndex = 0;
+    buttons.selectedSegmentIndex = 1;
     [buttons addTarget:self action:@selector(clickButtons:) forControlEvents:UIControlEventValueChanged];
     self.buttons = buttons;
     
-    UISegmentedControl *buttons1 = [[UISegmentedControl alloc] initWithItems:@[@"标准", @"卫星"]];
-    [self.view addSubview:buttons1];
-    
-    [buttons1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.view).offset(10);
-        make.bottom.mas_equalTo(self.view).offset(-10);
-        make.size.mas_equalTo(CGSizeMake(100, 32));
-    }];
-    
-    buttons1.selectedSegmentIndex = 0;
-    [buttons1 addTarget:self action:@selector(clickButtons1:) forControlEvents:UIControlEventValueChanged];
-    self.buttons1 = buttons1;
+//    UISegmentedControl *buttons1 = [[UISegmentedControl alloc] initWithItems:@[@"标准", @"卫星"]];
+//    [self.view addSubview:buttons1];
+//    
+//    [buttons1 mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(self.view).offset(10);
+//        make.bottom.mas_equalTo(self.view).offset(-10);
+//        make.size.mas_equalTo(CGSizeMake(100, 32));
+//    }];
+//    
+//    buttons1.selectedSegmentIndex = 0;
+//    [buttons1 addTarget:self action:@selector(clickButtons1:) forControlEvents:UIControlEventValueChanged];
+//    self.buttons1 = buttons1;
 }
 
 -(void)clickButtons:(UISegmentedControl *)seg

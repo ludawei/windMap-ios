@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
+#import "CWMyMotionStreakView.h"
 
 @interface NewMapCoverView : UIView
 
 @property (nonatomic,strong) MKMapView *mapView;
+@property (nonatomic,strong) CWMyMotionStreakView *motionView;
 @property (nonatomic) int particleType;         // 1，箭头；2，线段
 @property (nonatomic) NSInteger partNum;
 

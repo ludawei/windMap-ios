@@ -20,13 +20,13 @@
 #define PARTICLE_HEIGHT 4
 
 #define ARC4RANDOM_MAX      0x100000000
-#define PARTICLE_LIMIT      700
+#define PARTICLE_LIMIT      600
 #define PARTICLE_SHOW_LIMIT 400
 
 #define REFRESH_TIMEVAL_1   0.04f
 #define REFRESH_TIMEVAL_2   0.08f
 
-#define USE_TIMER 1
+//#define USE_TIMER 1
 
 @interface NewMapCoverView ()
 {
@@ -49,7 +49,7 @@
 
 @property (nonatomic,strong) UIBezierPath *arrowPath;
 
-@property (nonatomic,strong) UIImageView *imgView;
+//@property (nonatomic,strong) UIImageView *imgView;
 
 @end
 
@@ -87,13 +87,13 @@
         }
         
         // 用来显示拖尾巴效果
-        self.imgView = [[UIImageView alloc] init];
-        self.imgView.alpha = 0.9;
-        [self addSubview:self.imgView];
+//        self.imgView = [[UIImageView alloc] init];
+//        self.imgView.alpha = 0.9;
+//        [self addSubview:self.imgView];
         
-        [self.imgView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.mas_equalTo(self);
-        }];
+//        [self.imgView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.edges.mas_equalTo(self);
+//        }];
     }
     
     return self;
@@ -103,22 +103,29 @@
 {
     _particleType = particleType;
     if (particleType == 1) {
-        self.imgView.hidden = YES;
-        self.timeval = REFRESH_TIMEVAL_1;
+//        self.imgView.hidden = YES;
+//        self.timeval = REFRESH_TIMEVAL_1;
+        self.motionView.hidden = YES;
     }
     else
     {
-        self.imgView.hidden = NO;
-        self.timeval = REFRESH_TIMEVAL_2;
+//        self.imgView.hidden = NO;
+//        self.timeval = REFRESH_TIMEVAL_2;
+        self.motionView.hidden = NO;
     }
     
-    self.hidden = YES;
-    self.imgView.image = nil;
-    self.hidden = NO;
-    
-    [self.timer invalidate];
-    self.timer = nil;
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:self.timeval target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
+//    self.hidden = YES;
+//    self.imgView.image = nil;
+//    self.hidden = NO;
+
+    [self stop];
+    [self setNeedsDisplay];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self restart];
+    });
+//    [self.timer invalidate];
+//    self.timer = nil;
+//    self.timer = [NSTimer scheduledTimerWithTimeInterval:self.timeval target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
 }
 
 // Only override drawRect: if you perform custom drawing.
@@ -133,16 +140,16 @@
     if (self.particleType == 2)
     {
         @autoreleasepool {
-            UIImage *image = [self viewShot];
-            if (image) {
-                self.imgView.image = image;
-                image = nil;
-            }
-            else
-            {
-                NSLog(@"123");
-            }
+//            UIImage *image = [self viewShot];
+            
+//            if (image) {
+//                self.imgView.image = image;
+//                [self copy]
+//                [self.motionView addImage:image];
+//                image = nil;
+//            }
         }
+        [self.motionView addLayer:self.layer];
     }
     
     NSInteger showCount = 0;
@@ -390,7 +397,7 @@
     else
     {
         // 经度自下向上，画布自上向下，故取反
-        CGPoint center = CGPointMake(particle.center.x+particle.xv*(self.timeval/REFRESH_TIMEVAL_1), particle.center.y+(-particle.yv)*(self.timeval/REFRESH_TIMEVAL_1));
+        CGPoint center = CGPointMake(particle.center.x+particle.xv, particle.center.y+(-particle.yv));
         CGRect disRect = self.bounds;
         CGRect disMapRect = CGRectMake(self.x0, self.y0, self.x1-self.x0, self.y1-self.y0);
         
@@ -420,6 +427,7 @@
     self.timer.paused = YES;
 #endif
     self.hidden = YES;
+    self.motionView.hidden = YES;
 }
 
 -(void)restart
@@ -430,7 +438,15 @@
     self.timer.paused = NO;
 #endif
     self.hidden = NO;
-    self.imgView.image = nil;
+    if (self.particleType == 1) {
+        self.motionView.hidden = YES;
+    }
+    else
+    {
+        [self setNeedsDisplay];
+        self.motionView.hidden = NO;
+    }
+//    self.imgView.image = nil;
 }
 
 // 返回view上的点对应在地图上的位置

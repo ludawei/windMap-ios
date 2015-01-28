@@ -11,5 +11,6 @@
 @interface CWMyMotionStreakView : UIView
 
 -(void)addImage:(UIImage *)image;
+-(void)addLayer:(CALayer *)layer1;
 
 @end
